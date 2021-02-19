@@ -116,8 +116,9 @@ export class View {
 
     this.webContents.addListener('did-navigate', async (e, url) => {
       this.emitEvent('did-navigate', url);
-
-      await this.addHistoryItem(url);
+      if (!url.startsWith('error://')) {
+        await this.addHistoryItem(url);
+      }
       this.updateURL(url);
     });
 
@@ -212,6 +213,7 @@ export class View {
     this.webContents.addListener(
       'page-favicon-updated',
       async (e, favicons) => {
+        console.log('favicon update', favicons);
         this.favicon = favicons[0];
 
         this.updateData();

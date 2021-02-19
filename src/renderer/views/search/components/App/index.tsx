@@ -14,6 +14,7 @@ import {
   DEFAULT_TITLEBAR_HEIGHT,
   TOOLBAR_HEIGHT,
 } from '~/constants/design';
+import { isURL } from '~/utils';
 
 const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
   if (e.which === 13) {
@@ -23,19 +24,30 @@ const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const text = e.currentTarget.value;
     let url = text;
 
-    const suggestion = store.suggestions.selectedSuggestion;
+    // const suggestion = store.suggestions.selectedSuggestion;
+    //
+    // if (suggestion) {
+    //   if (suggestion.isSearch) {
+    //     url = store.searchEngine.url.replace('%s', text);
+    //   } else if (text.indexOf('://') === -1) {
+    //     url = `http://${text}`;
+    //   }
+    // }
 
-    if (suggestion) {
-      if (suggestion.isSearch) {
-        url = store.searchEngine.url.replace('%s', text);
-      } else if (text.indexOf('://') === -1) {
-        url = `http://${text}`;
-      }
+    if (isURL(url)) {
+      url = text.indexOf('://') === -1 ? `http://${text}` : text;
+    } else {
+      alert('not a valid URL');
+      return;
     }
 
     e.currentTarget.value = url;
 
-    callViewMethod(store.tabId, 'loadURL', url);
+    callViewMethod(store.tabId, 'loadURL', url).then((res) => {
+      if (res instanceof Error) {
+        alert("Couldn't load the URL");
+      }
+    });
 
     store.hide();
   }
@@ -100,26 +112,26 @@ export const App = observer(() => {
     ipcRenderer.send(`height-${store.id}`, height);
   });
 
-  const suggestion = store.suggestions.selectedSuggestion;
-  let favicon = ICON_SEARCH;
-  let customIcon = true;
-
-  if (suggestion && suggestionsVisible) {
-    favicon = suggestion.favicon;
-    customIcon = false;
-
-    if (suggestion.isSearch) {
-      favicon = store.searchEngine.icon;
-    } else if (
-      favicon == null ||
-      favicon.trim() === '' ||
-      favicon === ICON_PAGE
-    ) {
-      favicon = ICON_PAGE;
-      customIcon = true;
-    }
-  }
-
+  // const suggestion = store.suggestions.selectedSuggestion;
+  // let favicon = ICON_SEARCH;
+  // let customIcon = true;
+  //
+  //  search engine favicon
+  // if (suggestion && suggestionsVisible) {
+  //   favicon = suggestion.favicon;
+  //   customIcon = false;
+  //
+  //   if (suggestion.isSearch) {
+  //     favicon = store.searchEngine.icon;
+  //   } else if (
+  //     favicon == null ||
+  //     favicon.trim() === '' ||
+  //     favicon === ICON_PAGE
+  //   ) {
+  //     favicon = ICON_PAGE;
+  //     customIcon = true;
+  //   }
+  // }
   return (
     <ThemeProvider
       theme={{
@@ -127,30 +139,27 @@ export const App = observer(() => {
         searchBoxHeight:
           store.settings.topBarVariant === 'compact'
             ? COMPACT_TITLEBAR_HEIGHT
-            : TOOLBAR_HEIGHT - 1,
+            : TOOLBAR_HEIGHT - 10,
       }}
     >
       <StyledApp>
         <UIStyle />
         <SearchBox>
           <CurrentIcon
+            src={ICON_SEARCH}
             style={{
-              backgroundImage: `url(${favicon})`,
-              filter:
-                customIcon && store.theme['dialog.lightForeground']
-                  ? 'invert(100%)'
-                  : 'none',
-              opacity: customIcon ? 0.54 : 1,
+              transform: 'scale(-1,1)',
+              filter: 'brightness(0%) invert(100%)',
             }}
-          ></CurrentIcon>
+          />
           <Input
             onKeyDown={onKeyDown}
             onInput={onInput}
             ref={store.inputRef}
             onKeyPress={onKeyPress}
-          ></Input>
+          />
         </SearchBox>
-        <Suggestions visible={suggestionsVisible}></Suggestions>
+        {/*<Suggestions visible={suggestionsVisible} />*/}
       </StyledApp>
     </ThemeProvider>
   );

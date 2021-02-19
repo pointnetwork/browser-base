@@ -5,9 +5,8 @@ import { DialogStyle } from '~/renderer/mixins/dialogs';
 import { TOOLBAR_HEIGHT } from '~/constants/design';
 
 export const StyledApp = styled(DialogStyle)`
+  margin-top: 8px;
   transition: none;
-  padding-bottom: 4px;
-
   ${({ theme }: { theme?: ITheme }) => css`
     background-color: ${theme['searchBox.backgroundColor']};
     color: ${theme['searchBox.lightForeground']
@@ -56,11 +55,10 @@ export const Input = styled.input.attrs(() => ({
   `}
 `;
 
-export const CurrentIcon = styled.div`
+export const CurrentIcon = styled.img`
   width: 16px;
   height: 16px;
   min-width: 16px;
-  ${centerIcon()};
   margin-left: 11px;
 `;
 

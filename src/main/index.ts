@@ -56,14 +56,18 @@ ipcMain.handle(
   `web-contents-call`,
   async (e, { webContentsId, method, args = [] }) => {
     const wc = webContents.fromId(webContentsId);
-    const result = (wc as any)[method](...args);
+    console.log('webcontentscall', webContentsId, method, args);
+    if (wc) {
+      const result = (wc as any)[method](...args);
 
-    if (result) {
-      if (result instanceof Promise) {
-        return await result;
+      if (result) {
+        if (result instanceof Promise) {
+          return await result;
+        }
+
+        return result;
       }
-
-      return result;
     }
+    return null;
   },
 );

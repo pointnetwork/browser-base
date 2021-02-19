@@ -78,10 +78,12 @@ const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (isURL(value)) {
       url = value.indexOf('://') === -1 ? `http://${value}` : value;
     } else {
-      url = store.settings.searchEngine.url.replace('%s', value);
+      alert('not a valid URL');
+      return;
     }
 
     store.tabs.selectedTab.addressbarValue = url;
+    console.log('loadurl', url);
     callViewMethod(store.tabs.selectedTabId, 'loadURL', url);
   }
 };
@@ -149,7 +151,7 @@ export const AddressBar = observer(() => {
           placeholder="Search or type in a URL"
           visible={!store.addressbarTextVisible || store.addressbarValue === ''}
           value={store.addressbarValue}
-        ></Input>
+        />
         <Text
           visible={store.addressbarTextVisible && store.addressbarValue !== ''}
         >

@@ -1,6 +1,6 @@
 export const isURL = (input: string): boolean => {
-  const pattern = /^(?:\w+:)?\/\/([^\s.]+\.\S{2}|localhost[:?\d]*)\S*$/;
-
+  // const pattern = /^(?:\w+:)?\/\/([^\s.]+\.\S{2}|localhost[:?\d]*)\S*$/;
+  const pattern = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.([a-z]{2,5}|(z))(:[0-9]{1,5})?(\/.*)?$/;
   if (pattern.test(input)) {
     return true;
   }

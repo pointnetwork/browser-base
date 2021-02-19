@@ -61,6 +61,7 @@ export class SearchDialog extends PersistentDialog {
     super.show(browserWindow, true, false);
 
     browserWindow.once('resize', this.onResize);
+    this.browserView.webContents.openDevTools({ mode: 'detach' });
 
     this.send('visible', true, {
       id: Application.instance.windows.current.viewManager.selectedId,

@@ -83,7 +83,6 @@ export const getSearchSuggestions = (filter: string) =>
   // eslint-disable-next-line
   new Promise(async (resolve: (suggestions: string[]) => void, reject) => {
     const input = filter.trim().toLowerCase();
-
     if (input === '') {
       return resolve([]);
     }

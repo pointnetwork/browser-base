@@ -149,15 +149,6 @@ export const QuickMenu = observer(() => {
             <Icon icon={ICON_SETTINGS} />
             <MenuItemTitle>Settings</MenuItemTitle>
           </MenuItem>
-          {/* TODO: <MenuItem onClick={goToWebUIPage('extensions')}> */}
-          <MenuItem
-            onClick={goToURL(
-              'https://chrome.google.com/webstore/category/extensions',
-            )}
-          >
-            <Icon icon={ICON_EXTENSIONS} />
-            <MenuItemTitle>Extensions</MenuItemTitle>
-          </MenuItem>
           <Line />
           <MenuItem onClick={onFindInPageClick}>
             <Icon icon={ICON_FIND} />
