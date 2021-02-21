@@ -27,4 +27,6 @@ export const DEFAULT_SETTINGS: ISettings = {
     : '',
   doNotTrack: true,
   topBarVariant: 'default',
+  proxyRules: 'http://localhost:65501',
+  proxyBypassRules: 'http://localhost:4445',
 };

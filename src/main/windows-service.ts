@@ -1,6 +1,7 @@
 import { AppWindow } from './windows/app';
 import { extensions } from 'electron-extensions';
-import { BrowserWindow, ipcMain } from 'electron';
+import { BrowserWindow, ipcMain, session } from 'electron';
+import { Application } from '~/main/application';
 
 export class WindowsService {
   public list: AppWindow[] = [];

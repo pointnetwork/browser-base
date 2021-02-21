@@ -202,6 +202,9 @@ export class Settings extends EventEmitter {
   }
 
   public updateSettings(settings: Partial<ISettings>) {
+    if (this.object.proxyRules !== settings.proxyRules) {
+      Application.instance.setProxies(settings.proxyRules);
+    }
     this.object = { ...this.object, ...settings };
 
     this.addToQueue();

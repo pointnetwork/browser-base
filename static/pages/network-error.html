@@ -110,10 +110,20 @@
           description: `<b>${url}</b> is unreachable.`,
           code: 'ERR_ADDRESS_UNREACHABLE',
         },
+        '-130': {
+          title: 'Proxy connection has failed',
+          description: `<b>${url}</b> is unreachable. Proxy connection is unstable or non-existant`,
+          code: 'ERR_PROXY_CONNECTION_FAIL'
+        },
         '-300': {
           title: 'This site can’t be reached',
-          description: `The webpage at <b>${url}</b> might be temporarily down or it may have moved permanently to a new web address.`,
+          description: `The address is invalid`,
           code: 'ERR_INVALID_URL',
+        },
+        '-306': {
+          title: 'Proxy error',
+          description: 'No supported proxies found',
+          code: 'ERR_NO_SUPPORTED_PROXIES',
         },
         '-379': {
           title: 'This site can’t be reached',

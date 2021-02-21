@@ -30,4 +30,6 @@ export interface ISettings {
   downloadsPath: string;
   doNotTrack: boolean;
   topBarVariant: TopBarVariant;
+  proxyRules: string;
+  proxyBypassRules: string;
 }

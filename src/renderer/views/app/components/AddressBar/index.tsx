@@ -77,10 +77,11 @@ const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 
     if (isURL(value)) {
       url = value.indexOf('://') === -1 ? `http://${value}` : value;
-    } else {
-      alert('not a valid URL');
-      return;
-    }
+    } 
+    // else {
+    //   alert('not a valid URL');
+    //   return;
+    // }
 
     store.tabs.selectedTab.addressbarValue = url;
     console.log('loadurl', url);

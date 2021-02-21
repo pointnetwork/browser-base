@@ -1,4 +1,4 @@
-import { app, ipcMain, Menu } from 'electron';
+import { app, ipcMain, Menu, session } from 'electron';
 import { isAbsolute, extname } from 'path';
 import { existsSync } from 'fs';
 import { SessionsService } from './sessions-service';
@@ -83,11 +83,16 @@ export class Application {
       this.windows.open(incognito);
     });
 
+    ipcMain.on('apply-proxy', () => {
+      this.setProxies();
+    });
+
     this.onReady();
   }
 
   private async onReady() {
     await app.whenReady();
+    this.setProxies();
 
     new ExtensionServiceHandler();
 
@@ -110,5 +115,29 @@ export class Application {
         this.windows.open();
       }
     });
+  }
+
+  public setProxies(newProxyRules: string | void) {
+    const settings = this.settings.object;
+    const proxyRules = newProxyRules ? newProxyRules : settings.proxyRules;
+    const proxyBypassRules = settings.proxyBypassRules;
+    session
+      .fromPartition('persist:view')
+      .setProxy({ proxyRules, proxyBypassRules })
+      .then(() => {
+        console.log('proxy applied - webviewsession', {
+          proxyRules,
+          proxyBypassRules,
+        });
+      });
+    session
+      .fromPartition('view_incognito')
+      .setProxy({ proxyRules, proxyBypassRules })
+      .then(() => {
+        console.log('proxy applied - incognito', {
+          proxyRules,
+          proxyBypassRules,
+        });
+      });
   }
 }

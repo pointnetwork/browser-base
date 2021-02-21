@@ -35,6 +35,7 @@ import {
 } from '~/renderer/views/bookmarks/components/App/style';
 import { Textfield } from '~/renderer/components/Textfield';
 import { WebUIStyle } from '~/renderer/mixins/default-styles';
+import { ProxySettings } from '~/renderer/views/settings/components/ProxySettings';
 
 export const NormalButton = ({
   children,
@@ -256,6 +257,9 @@ export default observer(() => {
           <MenuItem icon={ICON_SHIELD} section="privacy">
             Privacy
           </MenuItem>
+          <MenuItem icon={ICON_SHIELD} section="proxy-settings">
+            Proxy Settings
+          </MenuItem>
           {/* <MenuItem section="permissions">Site permissions</MenuItem> */}
 
           {/* <MenuItem section="language">Languages</MenuItem> */}
@@ -273,6 +277,7 @@ export default observer(() => {
             {selectedSection === 'startup' && <OnStartup />}
             {selectedSection === 'privacy' && <Privacy />}
             {selectedSection === 'downloads' && <Downloads />}
+            {selectedSection === 'proxy-settings' && <ProxySettings />}
           </LeftContent>
         </Content>
       </Container>

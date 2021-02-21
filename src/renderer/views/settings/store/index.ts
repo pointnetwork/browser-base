@@ -17,6 +17,7 @@ export type SettingsSection =
   | 'shortcuts'
   | 'downloads'
   | 'system'
+  | 'proxy-settings'
   | 'search-engines';
 
 export class Store {
@@ -95,7 +96,7 @@ export class Store {
     };
   }
 
-  public save() {
+  public save(isNewProxy: boolean | void) {
     delete this.settings.darkContents;
     delete this.settings.multrin;
     delete this.settings.shield;
@@ -103,7 +104,7 @@ export class Store {
     window.postMessage(
       {
         type: 'save-settings',
-        data: JSON.stringify(this.settings),
+        data: JSON.stringify(isNewProxy ? { ...this.settings } : this.settings),
       },
       '*',
     );

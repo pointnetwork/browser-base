@@ -18,6 +18,23 @@ export const Header = styled.div`
   ${robotoLight()};
 `;
 
+export const Input = styled.input`
+  width: 100%;
+  height: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+
+  &:placeholder {
+    font-size: 14px;
+    color: #7a859b;
+  }
+
+  &:-ms-input-placeholder {
+    font-size: 14px;
+    color: #7a859b;
+  }
+`;
+
 export const Row = styled.div`
   width: 100%;
   display: flex;

@@ -36,20 +36,22 @@ const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 
     if (isURL(url)) {
       url = text.indexOf('://') === -1 ? `http://${text}` : text;
-    } else {
-      alert('not a valid URL');
-      return;
     }
+    // else {
+    //   alert('not a valid URL');
+    //   return;
+    // }
 
     e.currentTarget.value = url;
 
     callViewMethod(store.tabId, 'loadURL', url).then((res) => {
-      if (res instanceof Error) {
-        alert("Couldn't load the URL");
-      }
+      // if (res instanceof Error) {
+      //   alert("Couldn't load the URL");
+      // }
     });
 
     store.hide();
+    130;
   }
 };
 

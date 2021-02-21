@@ -1,4 +1,4 @@
-import { BrowserWindow, app, dialog, session } from 'electron';
+import { BrowserWindow, app, dialog, session, ipcRenderer } from 'electron';
 import { writeFileSync, promises } from 'fs';
 import { resolve, join } from 'path';
 
@@ -16,7 +16,6 @@ export class AppWindow {
   public incognito: boolean;
 
   public constructor(incognito: boolean) {
-    this.setProxies();
     this.win = new BrowserWindow({
       frame: false,
       minWidth: 400,
@@ -228,28 +227,5 @@ export class AppWindow {
         ? app.name
         : `${selected.title} - ${app.name}`,
     );
-  }
-
-  private setProxies() {
-    const proxyRules = `http://localhost:65501`;
-    const proxyBypassRules = `http://localhost:4445`;
-    session
-      .fromPartition('persist:view')
-      .setProxy({ proxyRules, proxyBypassRules })
-      .then(() => {
-        console.log('proxy applied - webviewsession', {
-          proxyRules,
-          proxyBypassRules,
-        });
-      });
-    session
-      .fromPartition('view_incognito')
-      .setProxy({ proxyRules, proxyBypassRules })
-      .then(() => {
-        console.log('proxy applied - incognito', {
-          proxyRules,
-          proxyBypassRules,
-        });
-      });
   }
 }
