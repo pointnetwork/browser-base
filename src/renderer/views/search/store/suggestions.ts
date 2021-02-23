@@ -79,7 +79,7 @@ export class SuggestionsStore {
 
       historySuggestions.splice(idx, 0, {
         primaryText: filter,
-        secondaryText: `${this.store.searchEngine.name} Search`,
+        secondaryText: `Search`,
         favicon: ICON_SEARCH,
         isSearch: true,
       });

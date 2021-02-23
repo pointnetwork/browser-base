@@ -277,7 +277,7 @@ export class View {
     });
 
     if (url.startsWith(NEWTAB_URL)) {
-      this.webContents.openDevTools({mode: "detatch"});
+      this.webContents.openDevTools({ mode: 'detatch' });
       this.isNewTab = true;
     }
 
