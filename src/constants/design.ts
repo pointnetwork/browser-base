@@ -7,6 +7,9 @@ export const COMPACT_TAB_HEIGHT = 32;
 // Toolbar
 export const TOOLBAR_HEIGHT = 42;
 
+// PointToolbar
+export const POINT_TOOLBAR_HEIGHT = 36;
+
 export const TOOLBAR_BUTTON_WIDTH = 36;
 export const TOOLBAR_BUTTON_HEIGHT = 32;
 

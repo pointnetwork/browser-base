@@ -40,7 +40,7 @@ const getInput = (name) => {
         name: 'point-nightly',
         repository: {
           type: 'git',
-          url: 'git+https://github.com/wexond/desktop-nightly.git',
+          url: 'git+https://github.com/pointnetwork/browser-base.git',
         },
       };
       await promises.writeFile(
