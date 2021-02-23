@@ -41,7 +41,6 @@ export const Image = styled.div`
 export const Wrapper = styled.div`
   display: flex;
   align-items: center;
-  flex-flow: column;
   position: relative;
   overflow: hidden;
 

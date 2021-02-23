@@ -68,5 +68,9 @@ export const ICON_WEATHER_NIGHT_SHOWERS = require('~/renderer/resources/icons/we
 export const ICON_WEATHER_NIGHT_SNOW = require('~/renderer/resources/icons/weather/night/snow.png');
 export const ICON_WEATHER_NIGHT_STORM = require('~/renderer/resources/icons/weather/night/storm.png');
 
+//  added for point browser
 export const ICON_WALLET = require('~/renderer/resources/icons/point/wallet.svg');
 export const ICON_POINT = require('~/renderer/resources/icons/point/point.png');
+export const ICON_DRIVE = require(`~/renderer/resources/icons/point/drive.svg`);
+export const ICON_SOCIAL = require(`~/renderer/resources/icons/point/social.svg`);
+export const ICON_MESSAGING = require(`~/renderer/resources/icons/point/messaging.svg`);

@@ -1,8 +1,8 @@
 {
   "name": "point",
-  "version": "6.0.0-nightly.2",
+  "version": "6.0.0-pre",
   "sideEffects": false,
-  "description": "Extensible, fast and innovative web browser with material UI.",
+  "description": "Point browser for point network based from wexond",
   "keywords": [
     "web-browser",
     "material",
@@ -11,15 +11,11 @@
     "mobx",
     "styled-components"
   ],
-  "homepage": "https://github.com/wexond/wexond#readme",
+  "homepage": "https://pointnetwork.github.io",
   "main": "build/main.bundle.js",
-  "author": "Eryk Rakowski <sentialx@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wexond/wexond.git"
-  },
-  "bugs": {
-    "url": "https://github.com/wexond/wexond/issues"
+    "url": "git+https://github.com/pointnetwork/browser-base.git"
   },
   "scripts": {
     "dev-renderer": "cross-env DEV=1 webpack serve --config webpack.config.renderer.js",

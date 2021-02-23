@@ -16,6 +16,7 @@ import {
   COMPACT_TAB_HEIGHT,
   DEFAULT_TAB_HEIGHT,
 } from '~/constants/design';
+import { PointToolbar } from '~/renderer/views/app/components/PointToolbar';
 
 const onAppLeave = () => {
   store.barHideTimer = setTimeout(function () {
@@ -40,6 +41,7 @@ const onLineEnter = () => {
 };
 
 const App = observer(() => {
+  console.log(store.addressbarValue);
   return (
     <ThemeProvider
       theme={{
@@ -65,6 +67,7 @@ const App = observer(() => {
         <UIStyle />
         <Titlebar />
         {store.settings.object.topBarVariant === 'default' && <Toolbar />}
+        {/*{store.addressbarValue === '' && <PointToolbar />}*/}
         <BookmarkBar />
       </StyledApp>
       <Line
