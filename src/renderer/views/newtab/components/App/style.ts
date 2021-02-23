@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components';
 import { centerIcon } from '~/renderer/mixins';
 
-import { ContextMenuRow } from '~/renderer/components/ContextMenu';
 import { ITheme } from '~/interfaces';
 
 export const Image = styled.div`
@@ -42,6 +41,7 @@ export const Image = styled.div`
 export const Wrapper = styled.div`
   display: flex;
   align-items: center;
+  flex-flow: column;
   position: relative;
   overflow: hidden;
 

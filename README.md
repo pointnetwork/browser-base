@@ -1,6 +1,6 @@
 # Point Browser
 
-This repo is a fork of [Eryk Rakowski](sentialx@gmail.com)'s [Wexond browser](https://github.com/wexond/browser-base), aimed to be used for the point network. 
+This repo is a fork of [Eryk Rakowski](sentialx@gmail.com)'s [Wexond browser](https://github.com/wexond/browser-base), aimed to be used for the point network.
 
 ## Update Log
 - 2/20 made point URLs work(.z urls), applied proxies to connect to point network nodes

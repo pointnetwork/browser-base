@@ -120,14 +120,14 @@ export const SiteButtons = observer(() => {
         dense={dense}
         onMouseDown={onStarClick}
       />
-      <ToolbarButton
-        size={16}
-        badge={store.settings.object.shield && blockedAds > 0}
-        badgeText={blockedAds.toString()}
-        icon={ICON_SHIELD}
-        opacity={store.settings.object.shield ? 0.87 : 0.54}
-        onContextMenu={onShieldContextMenu}
-      ></ToolbarButton>
+      {/*<ToolbarButton*/}
+      {/*  size={16}*/}
+      {/*  badge={store.settings.object.shield && blockedAds > 0}*/}
+      {/*  badgeText={blockedAds.toString()}*/}
+      {/*  icon={ICON_SHIELD}*/}
+      {/*  opacity={store.settings.object.shield ? 0.87 : 0.54}*/}
+      {/*  onContextMenu={onShieldContextMenu}*/}
+      {/*></ToolbarButton>*/}
     </>
   );
 });

@@ -276,7 +276,10 @@ export class View {
       this.emitEvent('media-paused', true);
     });
 
-    if (url.startsWith(NEWTAB_URL)) this.isNewTab = true;
+    if (url.startsWith(NEWTAB_URL)) {
+      this.webContents.openDevTools({mode: "detatch"});
+      this.isNewTab = true;
+    }
 
     this.webContents.loadURL(url);
 

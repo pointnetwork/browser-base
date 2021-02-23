@@ -37,7 +37,7 @@ const getInput = (name) => {
       );
       const newPkg = {
         ...package,
-        name: 'wexond-nightly',
+        name: 'point-nightly',
         repository: {
           type: 'git',
           url: 'git+https://github.com/wexond/desktop-nightly.git',
@@ -50,8 +50,8 @@ const getInput = (name) => {
 
       const newEBConfig = {
         ...electronBuilder,
-        appId: 'org.wexond.wexond-nightly',
-        productName: 'Wexond Nightly',
+        appId: 'org.point.point-nightly',
+        productName: 'Point Nightly',
         directories: {
           output: 'dist',
           buildResources: 'static/nightly-icons',

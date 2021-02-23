@@ -4,7 +4,7 @@ import { remote, app } from 'electron';
 export const DEFAULT_SEARCH_ENGINES: any[] = [];
 
 export const DEFAULT_SETTINGS: ISettings = {
-  theme: 'wexond-light',
+  theme: 'point-light',
   darkContents: false,
   shield: true,
   multrin: true,

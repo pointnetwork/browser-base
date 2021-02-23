@@ -17,6 +17,7 @@ import {
 } from '~/renderer/constants/icons';
 import { WebUIStyle } from '~/renderer/mixins/default-styles';
 import { getWebUIURL } from '~/common/webui';
+import { Wallet } from '~/renderer/views/newtab/components/Wallet';
 
 window.addEventListener('mousedown', () => {
   store.dashboardSettingsVisible = false;
@@ -48,8 +49,9 @@ export default observer(() => {
 
         <Wrapper fullSize={store.fullSizeImage}>
           <Image src={store.imageVisible ? store.image : ''}></Image>
-          <Content>{store.topSitesVisible && <TopSites></TopSites>}</Content>
+          {/*<Wallet />*/}
 
+          <Content>{store.topSitesVisible && <TopSites></TopSites>}</Content>
           <RightBar>
             <IconItem
               imageSet={store.imageVisible}

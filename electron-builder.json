@@ -1,6 +1,6 @@
 {
-  "appId": "org.wexond.wexond",
-  "productName": "Wexond",
+  "appId": "org.point.point",
+  "productName": "Point",
   "nsis": {
     "include": "static/installer.nsh"
   },
@@ -43,7 +43,7 @@
   "fileAssociations": [
     {
       "name": "Document",
-      "description": "Wexond",
+      "description": "Point",
       "role": "Viewer",
       "ext": "html"
     }

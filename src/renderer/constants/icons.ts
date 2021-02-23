@@ -67,3 +67,6 @@ export const ICON_WEATHER_NIGHT_RAIN = require('~/renderer/resources/icons/weath
 export const ICON_WEATHER_NIGHT_SHOWERS = require('~/renderer/resources/icons/weather/night/showers.png');
 export const ICON_WEATHER_NIGHT_SNOW = require('~/renderer/resources/icons/weather/night/snow.png');
 export const ICON_WEATHER_NIGHT_STORM = require('~/renderer/resources/icons/weather/night/storm.png');
+
+export const ICON_WALLET = require('~/renderer/resources/icons/point/wallet.svg');
+export const ICON_POINT = require('~/renderer/resources/icons/point/point.png');
