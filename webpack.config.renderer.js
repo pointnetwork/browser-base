@@ -57,6 +57,8 @@ applyEntries(appConfig, [
   'newtab',
   'bookmarks',
   'wallet',
+  'storage',
+  'messaging',
 ]);
 
 if (process.env.ENABLE_EXTENSIONS) {

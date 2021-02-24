@@ -48,6 +48,10 @@ export class ViewManager extends EventEmitter {
       });
     });
 
+    ipcMain.on(`set-tab-${id}`, (e, details) => {
+      this.views.get(this.selectedId).webContents.loadURL(details.url);
+    });
+
     ipcMain.on(`add-tab-${id}`, (e, details) => {
       this.create(details);
     });

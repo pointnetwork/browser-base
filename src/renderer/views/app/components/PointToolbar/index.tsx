@@ -14,16 +14,16 @@ import { ToolbarButton } from '~/renderer/views/app/components/ToolbarButton';
 import { ipcRenderer } from 'electron';
 import { getWebUIURL } from '~/common/webui';
 
-const addNewTab = (url: string) => {
-  console.log('addNewTab', url);
-  ipcRenderer.send(`add-tab-${store.windowId}`, {
+const setTabUrl = (url: string) => {
+  console.log('setTabData', url);
+  ipcRenderer.send(`set-tab-${store.windowId}`, {
     url,
     active: true,
   });
 };
 
 const goToWebUIPage = (name: string) => () => {
-  addNewTab(getWebUIURL(name));
+  setTabUrl(getWebUIURL(name));
 };
 
 export const PointToolbar = observer(() => {
@@ -41,18 +41,20 @@ export const PointToolbar = observer(() => {
         style={{ marginLeft: 6 }}
       />
       <ToolbarButton
+        onClick={goToWebUIPage('storage')}
         disabled={false}
         size={16}
         icon={ICON_DRIVE}
         style={{ marginLeft: 6 }}
       />
       <ToolbarButton
-        disabled={false}
+        disabled={true}
         size={16}
         icon={ICON_SOCIAL}
         style={{ marginLeft: 6 }}
       />
       <ToolbarButton
+        onClick={goToWebUIPage('messaging')}
         disabled={false}
         size={16}
         icon={ICON_MESSAGING}
