@@ -15,9 +15,9 @@ export const runAutoUpdaterService = () => {
     return updateAvailable;
   });
 
-  ipcMain.on('update-check', () => {
-    autoUpdater.checkForUpdates();
-  });
+  // ipcMain.on('update-check', () => {
+  //   autoUpdater.checkForUpdates();
+  // });
 
   autoUpdater.on('update-downloaded', () => {
     updateAvailable = true;

@@ -31,3 +31,21 @@ export const PointToolIcon = styled.div`
     margin-left: 10px;
   }
 `;
+
+export const PointAmount = styled.div`
+  margin-left: 4px;
+  margin-right: 4px;
+  display: flex;
+  align-items: flex-end;
+  padding: 4px 8px;
+  color: white;
+  border: 2px #ddd solid;
+  border-radius: 12px;
+  > h2 {
+    font-size: 16px;
+    margin-right: 2px;
+  }
+  > p {
+    font-size: 11px;
+  }
+`;

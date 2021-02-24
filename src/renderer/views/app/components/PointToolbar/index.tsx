@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import * as React from 'react';
-import { StyledToolbar, PointToolIcon } from './style';
+import { StyledToolbar, PointToolIcon, PointAmount } from './style';
 import { Icon } from '../ToolbarButton/style';
 import {
   ICON_BACK,
@@ -11,11 +11,30 @@ import {
 } from '~/renderer/constants';
 import store from '~/renderer/views/app/store';
 import { ToolbarButton } from '~/renderer/views/app/components/ToolbarButton';
+import { ipcRenderer } from 'electron';
+import { getWebUIURL } from '~/common/webui';
+
+const addNewTab = (url: string) => {
+  console.log('addNewTab', url);
+  ipcRenderer.send(`add-tab-${store.windowId}`, {
+    url,
+    active: true,
+  });
+};
+
+const goToWebUIPage = (name: string) => () => {
+  addNewTab(getWebUIURL(name));
+};
 
 export const PointToolbar = observer(() => {
   return (
     <StyledToolbar>
+      <PointAmount>
+        <h2>100.00</h2>
+        <p>PN</p>
+      </PointAmount>
       <ToolbarButton
+        onClick={goToWebUIPage('wallet')}
         disabled={false}
         size={16}
         icon={ICON_WALLET}

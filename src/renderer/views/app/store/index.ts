@@ -82,7 +82,6 @@ export class Store {
   };
 
   // Computed
-
   public get downloadProgress() {
     const downloading = this.downloads.filter((x) => !x.completed);
 
@@ -115,6 +114,12 @@ export class Store {
         ? tab.url.slice(0, -1)
         : tab.url;
     return '';
+  }
+
+  public get hasUrlLoaded() {
+    const tab = this.tabs.selectedTab;
+    if (!tab) return false;
+    return tab.url !== '';
   }
 
   public get addressbarUrlSegments() {
@@ -325,7 +330,7 @@ export class Store {
       ipcRenderer.send('load-extensions');
     }
 
-    ipcRenderer.send('update-check');
+    // ipcRenderer.send('update-check');
   }
 }
 
