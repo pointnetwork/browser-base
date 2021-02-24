@@ -74,3 +74,4 @@ export const ICON_POINT = require('~/renderer/resources/icons/point/point.png');
 export const ICON_DRIVE = require(`~/renderer/resources/icons/point/drive.svg`);
 export const ICON_SOCIAL = require(`~/renderer/resources/icons/point/social.svg`);
 export const ICON_MESSAGING = require(`~/renderer/resources/icons/point/messaging.svg`);
+export const ICON_NOTIFICATION = require(`~/renderer/resources/icons/point/notification.svg`);

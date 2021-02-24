@@ -17,6 +17,7 @@ import { showExtensionDialog } from '../dialogs/extension-popup';
 import { showDownloadsDialog } from '../dialogs/downloads';
 import { showZoomDialog } from '../dialogs/zoom';
 import { showTabGroupDialog } from '../dialogs/tabgroup';
+import { showNotificationsDialog } from '~/main/dialogs/notifications';
 
 export const runMessagingService = (appWindow: AppWindow) => {
   const { id } = appWindow;
@@ -97,6 +98,10 @@ export const runMessagingService = (appWindow: AppWindow) => {
 
   ipcMain.on(`show-downloads-dialog-${id}`, (e, left, top) => {
     showDownloadsDialog(appWindow.win, left, top);
+  });
+
+  ipcMain.on(`show-notifications-dialog-${id}`, (e, left, top) => {
+    showNotificationsDialog(appWindow.win, left, top);
   });
 
   ipcMain.on(`show-zoom-dialog-${id}`, (e, left, top) => {

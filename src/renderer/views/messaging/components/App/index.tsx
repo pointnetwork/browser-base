@@ -11,7 +11,7 @@ export default observer(() => {
     <ThemeProvider theme={{ ...store.theme }}>
       <div>
         <WebUIStyle />
-        <Wrapper fullSize={true}>Storage</Wrapper>
+        <Wrapper fullSize={true}>Messaging</Wrapper>
       </div>
     </ThemeProvider>
   );

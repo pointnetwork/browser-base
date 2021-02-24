@@ -49,7 +49,12 @@ export class ViewManager extends EventEmitter {
     });
 
     ipcMain.on(`set-tab-${id}`, (e, details) => {
-      this.views.get(this.selectedId).webContents.loadURL(details.url);
+      const view = this.views.get(this.selectedId);
+      if (details.url !== view.url) {
+        view.webContents.loadURL(details.url);
+      } else {
+        view.webContents.reload();
+      }
     });
 
     ipcMain.on(`add-tab-${id}`, (e, details) => {

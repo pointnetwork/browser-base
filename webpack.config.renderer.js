@@ -59,6 +59,7 @@ applyEntries(appConfig, [
   'wallet',
   'storage',
   'messaging',
+  'notifications',
 ]);
 
 if (process.env.ENABLE_EXTENSIONS) {
