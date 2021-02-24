@@ -58,7 +58,7 @@ export class SearchDialog extends PersistentDialog {
   };
 
   public async show(browserWindow: BrowserWindow) {
-    this.webContents.openDevTools({ mode: 'detach' });
+    // this.webContents.openDevTools({ mode: 'detach' });
     super.show(browserWindow, true, false);
 
     browserWindow.once('resize', this.onResize);

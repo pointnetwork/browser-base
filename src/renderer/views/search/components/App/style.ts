@@ -5,7 +5,7 @@ import { DialogStyle } from '~/renderer/mixins/dialogs';
 import { TOOLBAR_HEIGHT } from '~/constants/design';
 
 export const StyledApp = styled(DialogStyle)`
-  margin-top: 8px;
+  margin-top: 7px;
   transition: none;
   ${({ theme }: { theme?: ITheme }) => css`
     background-color: ${theme['searchBox.backgroundColor']};
