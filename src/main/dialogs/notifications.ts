@@ -27,7 +27,6 @@ export const showNotificationsDialog = (
         `max-height`,
         Math.min(maxHeight, height),
       );
-      console.log(height, y - DIALOG_MARGIN_TOP);
       return {
         x: x - 350,
         y: y - DIALOG_MARGIN_TOP,

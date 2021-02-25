@@ -35,24 +35,25 @@ export const getHistorySuggestions = (filter: string) => {
       url: urlPart,
     };
 
+    // if (
+    //   urlPart.indexOf(
+    //     store.searchEngine.url.replace('%s', '').replace(regex, ''),
+    //   ) !== -1
+    // ) {
+    //   const query = urlPart
+    //     .split('q=')[1]
+    //     .split('&')[0]
+    //     .replace(/\+/g, ' ')
+    //     .replace(/%20/g, ' ');
+    //   if (
+    //     query.startsWith(filter) &&
+    //     urlMatchedItems.filter((x) => x.url === query).length === 0
+    //   ) {
+    //     itemToPush.url = query;
+    //     urlMatchedItems.push({ url: query, canSuggest: true, isSearch: true });
+    //   }
+    // }
     if (
-      urlPart.indexOf(
-        store.searchEngine.url.replace('%s', '').replace(regex, ''),
-      ) !== -1
-    ) {
-      const query = urlPart
-        .split('q=')[1]
-        .split('&')[0]
-        .replace(/\+/g, ' ')
-        .replace(/%20/g, ' ');
-      if (
-        query.startsWith(filter) &&
-        urlMatchedItems.filter((x) => x.url === query).length === 0
-      ) {
-        itemToPush.url = query;
-        urlMatchedItems.push({ url: query, canSuggest: true, isSearch: true });
-      }
-    } else if (
       urlPart.toLowerCase().startsWith(filterPart) ||
       `www.${urlPart}`.startsWith(filterPart)
     ) {

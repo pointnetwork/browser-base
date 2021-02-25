@@ -4,7 +4,7 @@ import { DialogStyle } from '~/renderer/mixins/dialogs';
 
 export const StyledApp = styled(DialogStyle)`
   overflow: overlay;
-  padding: 6px;
+  padding: 8px;
   font-size: 13px;
   width: 100vw;
   height: 100vh;

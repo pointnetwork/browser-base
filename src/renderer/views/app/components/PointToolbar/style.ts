@@ -48,6 +48,10 @@ export const PointAmount = styled.div`
   color: white;
   border: 2px #ddd solid;
   border-radius: 12px;
+
+  ${({ theme }: { icon?: string; theme?: ITheme; imageSet?: boolean }) => css`
+    filter: ${!theme['pages.lightForeground'] ? 'invert(100%)' : 'none'};
+  `};
   > h2 {
     font-size: 16px;
     margin-right: 2px;

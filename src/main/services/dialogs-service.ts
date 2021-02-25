@@ -276,6 +276,7 @@ export class DialogsService {
     }
 
     ipcMain.on(`hide-${browserView.webContents.id}`, () => {
+      // browserView.webContents.openDevTools({ mode: 'detach' });
       dialog.hide();
     });
 
