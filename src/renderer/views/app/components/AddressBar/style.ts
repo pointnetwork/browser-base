@@ -15,6 +15,10 @@ export const StyledAddressBar = styled.div`
   overflow: hidden;
 
   ${({ theme, focus }: { theme: ITheme; focus: boolean }) => css`
+    height: 32px;
+    > :not(:first-child) {
+      margin-bottom: ${focus && '3px'};
+    }
     background-color: ${theme['addressbar.backgroundColor']};
     border: 1px solid
       ${theme.isCompact

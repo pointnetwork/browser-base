@@ -151,7 +151,6 @@ export class PersistentDialog {
 
   public hide(bringToTop = false, hideVisually = true) {
     if (!this.browserWindow) return;
-
     if (hideVisually) this.hideVisually();
 
     if (!this.visible) return;

@@ -141,7 +141,7 @@ export const App = observer(() => {
         searchBoxHeight:
           store.settings.topBarVariant === 'compact'
             ? COMPACT_TITLEBAR_HEIGHT
-            : TOOLBAR_HEIGHT - 10,
+            : TOOLBAR_HEIGHT - 5,
       }}
     >
       <StyledApp>
