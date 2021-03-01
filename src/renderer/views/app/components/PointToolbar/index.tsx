@@ -7,6 +7,7 @@ import {
   ICON_SOCIAL,
   ICON_WALLET,
   ICON_NOTIFICATION,
+  ICON_CLOSE_X,
 } from '~/renderer/constants';
 import store from '~/renderer/views/app/store';
 import { ToolbarButton } from '~/renderer/views/app/components/ToolbarButton';
@@ -32,6 +33,10 @@ const onNotificationClick = async (e: React.MouseEvent<HTMLDivElement>) => {
     right, //  5 for padding
     bottom,
   );
+};
+
+const onConfirmationClick = async (e: React.MouseEvent<HTMLDivElement>) => {
+  ipcRenderer.send(`show-confirmation-dialog-${store.windowId}`);
 };
 
 export const PointToolbar = observer(() => {
@@ -68,6 +73,12 @@ export const PointToolbar = observer(() => {
           size={16}
           icon={ICON_MESSAGING}
           style={{ marginLeft: 6 }}
+        />
+        <ToolbarButton
+          onMouseDown={onConfirmationClick}
+          disabled={false}
+          size={16}
+          icon={ICON_CLOSE_X}
         />
       </StyledToolbar>
       <StyledToolbar>

@@ -76,6 +76,7 @@ export class Store {
   public dialogsVisibility: { [key: string]: boolean } = {
     menu: false,
     'add-bookmark': false,
+    confirmation: false,
     zoom: false,
     'extension-popup': false,
     'downloads-dialog': false,

@@ -60,6 +60,7 @@ applyEntries(appConfig, [
   'storage',
   'messaging',
   'notifications',
+  'confirmation',
 ]);
 
 if (process.env.ENABLE_EXTENSIONS) {
