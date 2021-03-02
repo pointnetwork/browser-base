@@ -258,8 +258,14 @@ export class DialogsService {
     }
 
     if (onWindowBoundsUpdate) {
-      browserWindow.on('resize', windowEvents.resize);
-      browserWindow.on('move', windowEvents.move);
+      browserWindow.on(
+        'resize',
+        onWindowBoundsUpdate ? onWindowBoundsUpdate : windowEvents.resize,
+      );
+      browserWindow.on(
+        'move',
+        onWindowBoundsUpdate ? onWindowBoundsUpdate : windowEvents.resize,
+      );
     }
 
     browserView.webContents.once('dom-ready', () => {

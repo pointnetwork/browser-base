@@ -2,7 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react-lite';
 import { ThemeProvider } from 'styled-components';
 
-import { StyledApp, Wrapper } from './style';
+import { StyledApp, Wrapper, Title } from './style';
 import store from '../../store';
 import { UIStyle } from '~/renderer/mixins/default-styles';
 
@@ -11,7 +11,10 @@ export const App = observer(() => {
     <ThemeProvider theme={{ ...store.theme }}>
       <StyledApp visible>
         <Wrapper>
-          <p>a wrapper</p>
+          <Title>
+            <h1>Confirmation Area</h1>
+          </Title>
+          <section>Display Confirmation info</section>
         </Wrapper>
         <UIStyle />
       </StyledApp>

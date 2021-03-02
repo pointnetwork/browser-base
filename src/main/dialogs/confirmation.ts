@@ -15,28 +15,52 @@ export const showConfirmationDialog = (browserWindow: BrowserWindow) => {
     name: 'confirmation',
     browserWindow,
     getBounds: () => {
+      const topHeight =
+        TOOLBAR_HEIGHT + POINT_TOOLBAR_HEIGHT + DEFAULT_TAB_HEIGHT + 5;
       const winBounds = browserWindow.getContentBounds();
-      const height =
-        winBounds.height -
-        (TOOLBAR_HEIGHT + POINT_TOOLBAR_HEIGHT + DEFAULT_TAB_HEIGHT);
-      const center = { x: winBounds.width / 2, y: height / 2 };
-
-      const halfWidth = winBounds.width / 2;
-      const halfHeight = height / 2;
+      const display = {
+        height: winBounds.height - topHeight,
+        width: winBounds.width - 20,
+      };
 
       dialog.browserView.webContents.send(`max-height`, 400);
-      dialog.browserView.webContents.openDevTools({ mode: 'detach' });
-      return {
-        x: center.x - halfWidth / SIZE_MULT,
-        y:
-          TOOLBAR_HEIGHT +
-          POINT_TOOLBAR_HEIGHT +
-          DEFAULT_TAB_HEIGHT +
-          center.y -
-          halfHeight / SIZE_MULT,
-        width: (halfWidth * 2) / SIZE_MULT,
-        height: (halfHeight * 2) / SIZE_MULT,
+      // dialog.browserView.webContents.openDevTools({ mode: 'detach' });
+
+      const dims = {
+        height: Math.min(400, display.height),
+        width: Math.min(300, display.width),
       };
+
+      return {
+        x: display.width - dims.width,
+        y: topHeight,
+        width: dims.width,
+        height: dims.height,
+      };
+
+      //  placing the confirmation window as fulls creen
+      // const winBounds = browserWindow.getContentBounds();
+      // const height =
+      //   winBounds.height -
+      //   (TOOLBAR_HEIGHT + POINT_TOOLBAR_HEIGHT + DEFAULT_TAB_HEIGHT);
+      // const center = { x: winBounds.width / 2, y: height / 2 };
+      //
+      // const halfWidth = winBounds.width / 2;
+      // const halfHeight = height / 2;
+      //
+      // dialog.browserView.webContents.send(`max-height`, 400);
+      // dialog.browserView.webContents.openDevTools({ mode: 'detach' });
+      // return {
+      //   x: center.x - halfWidth / SIZE_MULT,
+      //   y:
+      //     TOOLBAR_HEIGHT +
+      //     POINT_TOOLBAR_HEIGHT +
+      //     DEFAULT_TAB_HEIGHT +
+      //     center.y -
+      //     halfHeight / SIZE_MULT,
+      //   width: (halfWidth * 2) / SIZE_MULT,
+      //   height: (halfHeight * 2) / SIZE_MULT,
+      // };
     },
     onWindowBoundsUpdate: () => dialog.hide(),
   });

@@ -76,3 +76,5 @@ export const ICON_SOCIAL = require(`~/renderer/resources/icons/point/social.svg`
 export const ICON_MESSAGING = require(`~/renderer/resources/icons/point/messaging.svg`);
 export const ICON_NOTIFICATION = require(`~/renderer/resources/icons/point/notification.svg`);
 export const ICON_CLOSE_X = require(`~/renderer/resources/icons/point/closeX.svg`);
+export const ICON_CONFIRMATION = require(`~/renderer/resources/icons/point/confirmation.svg`);
+export const ICON_NO_PROFILE = require(`~/renderer/resources/icons/point/no-profile.png`);

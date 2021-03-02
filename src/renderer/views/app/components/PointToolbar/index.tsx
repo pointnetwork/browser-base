@@ -7,7 +7,7 @@ import {
   ICON_SOCIAL,
   ICON_WALLET,
   ICON_NOTIFICATION,
-  ICON_CLOSE_X,
+  ICON_CONFIRMATION,
 } from '~/renderer/constants';
 import store from '~/renderer/views/app/store';
 import { ToolbarButton } from '~/renderer/views/app/components/ToolbarButton';
@@ -74,14 +74,14 @@ export const PointToolbar = observer(() => {
           icon={ICON_MESSAGING}
           style={{ marginLeft: 6 }}
         />
+      </StyledToolbar>
+      <StyledToolbar>
         <ToolbarButton
           onMouseDown={onConfirmationClick}
           disabled={false}
           size={16}
-          icon={ICON_CLOSE_X}
+          icon={ICON_CONFIRMATION}
         />
-      </StyledToolbar>
-      <StyledToolbar>
         <ToolbarButton
           toggled={store.dialogsVisibility['notifications']}
           onMouseDown={onNotificationClick}

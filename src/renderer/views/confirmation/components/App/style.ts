@@ -47,8 +47,22 @@ export const Wrapper = styled.div`
   position: relative;
   height: 100%;
   width: 100%;
+  background-color: rgba(20, 20, 20, 0.9);
+  border-radius: 5px;
+  border: 1px rgba(100, 100, 100, 1) solid;
+
+  padding: 10px;
+  > section {
+    padding: 12px;
+    margin-top: 8px;
+  }
+`;
+
+export const Title = styled.div`
+  width: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
-  background-color: rgba(100, 100, 100, 0.2);
+  > h1 {
+    font-size: 20px;
+  }
 `;

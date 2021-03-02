@@ -19,6 +19,8 @@ import { showZoomDialog } from '../dialogs/zoom';
 import { showTabGroupDialog } from '../dialogs/tabgroup';
 import { showNotificationsDialog } from '~/main/dialogs/notifications';
 import { showConfirmationDialog } from '../dialogs/confirmation';
+import { Confirmation } from '~/renderer/views/confirmation/store/Confirmation';
+import { IConfirmation } from '~/interfaces/confirmation';
 
 export const runMessagingService = (appWindow: AppWindow) => {
   const { id } = appWindow;
@@ -282,4 +284,9 @@ export const runMessagingService = (appWindow: AppWindow) => {
       bookmarkMenu.createMenu(appWindow, item).popup({ window: appWindow.win });
     },
   );
+
+  //  point related messages
+  ipcMain.handle(`request-confirmation-${id}`, (event, item: IConfirmation) => {
+    //  request confirmation logic
+  });
 };
