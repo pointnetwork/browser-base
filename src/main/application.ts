@@ -23,7 +23,7 @@ export class Application {
 
   public storage = new StorageService();
 
-  public windows = new WindowsService();
+  public windows = WindowsService.instance;
 
   public dialogs = new DialogsService();
 

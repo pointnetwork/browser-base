@@ -2,8 +2,12 @@ import { AppWindow } from './windows/app';
 import { extensions } from 'electron-extensions';
 import { BrowserWindow, ipcMain, session } from 'electron';
 import { Application } from '~/main/application';
+import { WalletService } from './services/wallet/wallet';
 
 export class WindowsService {
+  static instance = new WindowsService();
+
+  public Wallet = WalletService.instance;
   public list: AppWindow[] = [];
 
   public current: AppWindow;
@@ -56,6 +60,10 @@ export class WindowsService {
     });
 
     return window;
+  }
+
+  public getAllWindowIds(): number[] {
+    return this.list.map((window) => window.id);
   }
 
   public findByBrowserView(webContentsId: number) {

@@ -21,16 +21,16 @@
     "dev-renderer": "cross-env DEV=1 webpack serve --config webpack.config.renderer.js",
     "dev-webpack": "cross-env DEV=1 webpack",
     "build-renderer": "webpack --config webpack.config.renderer.js",
-    "dev": "cross-env START=1 npm run watch",
-    "build": "rimraf build && concurrently \"npm run build-renderer\" \"webpack\"",
+    "dev": "cross-env START=1 yarn watch",
+    "build": "rimraf build && concurrently \"yarn build-renderer\" \"webpack\"",
     "ci-build": "node scripts/ci-build.js",
     "start": "electron .",
-    "watch": "concurrently \"npm run dev-renderer\" \"npm run dev-webpack\"",
-    "compile-win32": "npm run build && electron-builder -w",
-    "compile-darwin": "npm run build && electron-builder -m",
-    "compile-linux": "npm run build && electron-builder -l",
+    "watch": "concurrently \"yarn dev-renderer\" \"yarn dev-webpack\"",
+    "compile-win32": "yarn build && electron-builder -w",
+    "compile-darwin": "yarn build && electron-builder -m",
+    "compile-linux": "yarn build && electron-builder -l",
     "lint": "eslint \"src/**/*.ts*\" \"src/**/*.tsx*\"",
-    "lint-fix": "npm run lint -- --fix",
+    "lint-fix": "yarn lint -- --fix",
     "rebuild": "electron-builder install-app-deps"
   },
   "devDependencies": {
@@ -38,10 +38,12 @@
     "@cliqz/adblocker-electron": "1.20.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
     "@types/animejs": "^3.1.2",
+    "@types/big.js": "^6.0.2",
     "@types/chrome": "0.0.130",
     "@types/classnames": "^2.2.11",
     "@types/crypto-js": "^4.0.1",
     "@types/jszip": "^3.4.1",
+    "@types/lodash": "^4.14.168",
     "@types/nedb": "1.8.11",
     "@types/node": "14.14.28",
     "@types/node-fetch": "^2.5.8",
@@ -56,6 +58,7 @@
     "animejs": "^3.2.1",
     "awesome-node-loader": "^1.1.1",
     "babel-loader": "^8.2.2",
+    "big.js": "^6.0.3",
     "classnames": "^2.2.6",
     "concurrently": "^5.3.0",
     "copy-webpack-plugin": "^7.0.0",
@@ -74,6 +77,7 @@
     "html-webpack-plugin": "^5.1.0",
     "icojs": "^0.16.0",
     "jszip": "^3.6.0",
+    "lodash": "^4.17.21",
     "mobx": "6.1.7",
     "mobx-react-lite": "3.2.0",
     "nedb": "1.8.0",
@@ -101,7 +105,7 @@
     "webpack-merge": "^5.7.3"
   },
   "dependencies": {},
-  "engines" : { 
-    "node" : ">=15.3.0" 
+  "engines": {
+    "node": ">=15.3.0"
   }
 }

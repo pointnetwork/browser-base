@@ -12,7 +12,9 @@ export default observer(() => {
       <div>
         <WebUIStyle />
 
-        <Wrapper fullSize={true}>Wallet</Wrapper>
+        <Wrapper fullSize={true}>
+          <h1>Point Wallet</h1>
+        </Wrapper>
       </div>
     </ThemeProvider>
   );
