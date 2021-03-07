@@ -17,4 +17,10 @@ export const Wrapper = styled.div`
   > h1 {
     font-size: 30px;
   }
+  > div {
+    margin-top: 20px;
+    > p {
+      font-size: 15px;
+    }
+  }
 `;

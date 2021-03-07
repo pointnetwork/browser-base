@@ -13,6 +13,7 @@ import store from '~/renderer/views/app/store';
 import { ToolbarButton } from '~/renderer/views/app/components/ToolbarButton';
 import { ipcRenderer } from 'electron';
 import { getWebUIURL } from '~/common/webui';
+import { fixed } from '~/utils/Big';
 
 const setTabUrl = (url: string) => {
   console.log('setTabData', url);
@@ -44,7 +45,7 @@ export const PointToolbar = observer(() => {
     <StyledToolbarWrapper>
       <StyledToolbar>
         <PointAmount>
-          <h2>100.00</h2>
+          <h2>{fixed(store.funds, 1)}</h2>
           <p>POINT</p>
         </PointAmount>
         <ToolbarButton

@@ -18,9 +18,10 @@ import { showDownloadsDialog } from '../dialogs/downloads';
 import { showZoomDialog } from '../dialogs/zoom';
 import { showTabGroupDialog } from '../dialogs/tabgroup';
 import { showNotificationsDialog } from '~/main/dialogs/notifications';
-import { showConfirmationDialog } from '../dialogs/confirmation';
+// import { showConfirmationDialog } from '../dialogs/confirmation';
 import { Confirmation } from '~/renderer/views/confirmation/store/Confirmation';
 import { IConfirmation } from '~/interfaces/confirmation';
+import { ConfirmationDialog } from '~/main/dialogs/confirmation';
 
 export const runMessagingService = (appWindow: AppWindow) => {
   const { id } = appWindow;
@@ -107,8 +108,12 @@ export const runMessagingService = (appWindow: AppWindow) => {
     showNotificationsDialog(appWindow.win, left, top);
   });
 
-  ipcMain.on(`show-confirmation-dialog-${id}`, () => {
-    showConfirmationDialog(appWindow.win);
+  ipcMain.on(`show-confirmation-dialog-${id}`, (e, data) => {
+    const dialog = Application.instance.dialogs.getPersistent(
+      'confirmation',
+    ) as ConfirmationDialog;
+    dialog.bounds = appWindow.win.getContentBounds();
+    dialog.show(appWindow.win);
   });
 
   ipcMain.on(`show-zoom-dialog-${id}`, (e, left, top) => {

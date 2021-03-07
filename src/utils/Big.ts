@@ -1,7 +1,5 @@
 import B from 'big.js';
-import each from 'lodash/each';
-import isFinite from 'lodash/isFinite';
-import isNumber from 'lodash/isNumber';
+import { each, isFinite, isNumber } from 'lodash';
 
 B.NE = -10;
 B.PE = 100;
@@ -27,10 +25,12 @@ export const mod = (input1: BigInput, input2: BigInput) => {
   }
 };
 
-export const fixed = (input: BigInput, places: number) => {
+// @ts-ignore
+export const fixed = (input: BigInput, places: number | void) => {
   try {
     return new B(input).toFixed(isNumber(places) ? places : 2);
   } catch (ex) {
+    console.warn(ex);
     return fixed(0, 2);
   }
 };

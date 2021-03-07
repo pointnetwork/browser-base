@@ -17,6 +17,8 @@ import { IURLSegment } from '~/interfaces/urls';
 import { BookmarkBarStore } from './bookmark-bar';
 
 export class Store {
+  public funds: string = '';
+
   public settings = new SettingsStore(this);
   public addTab = new AddTabStore();
   public tabs = new TabsStore();
@@ -178,6 +180,7 @@ export class Store {
 
   public constructor() {
     makeObservable(this, {
+      funds: observable,
       addressbarTextVisible: observable,
       addressbarFocused: observable,
       addressbarEditing: observable,
@@ -333,6 +336,13 @@ export class Store {
     }
 
     // ipcRenderer.send('update-check');
+    this.walletInit();
+  }
+  private async walletInit() {
+    this.funds = await ipcRenderer.invoke('wallet-get-funds');
+    ipcRenderer.on('wallet-update-funds', (e, funds) => {
+      this.funds = funds;
+    });
   }
 }
 

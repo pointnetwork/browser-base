@@ -5,6 +5,7 @@ import { PreviewDialog } from '../dialogs/preview';
 import { PersistentDialog } from '../dialogs/dialog';
 import { Application } from '../application';
 import { IRectangle } from '~/interfaces';
+import { ConfirmationDialog } from '~/main/dialogs/confirmation';
 
 interface IDialogTabAssociation {
   tabId?: number;
@@ -57,6 +58,7 @@ export class DialogsService {
 
     this.persistentDialogs.push(new SearchDialog());
     this.persistentDialogs.push(new PreviewDialog());
+    this.persistentDialogs.push(new ConfirmationDialog());
   }
 
   private createBrowserView() {

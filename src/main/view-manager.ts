@@ -52,6 +52,7 @@ export class ViewManager extends EventEmitter {
       const view = this.views.get(this.selectedId);
       if (details.url !== view.url) {
         view.webContents.loadURL(details.url);
+        view.webContents.openDevTools({ mode: 'detach' });
       } else {
         view.webContents.reload();
       }

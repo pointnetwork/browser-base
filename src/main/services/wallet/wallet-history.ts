@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import EventEmitter from 'node:events';
+import { EventEmitter } from 'events';
 import { ITxReceive, ITxSend } from '~/interfaces/tx';
 import { IWalletTx } from '~/interfaces/wallet';
 
@@ -13,15 +13,17 @@ export class WalletHistory extends EventEmitter {
   public liveSendArray: ITxSend[]; //  send Txs that occurred after app start
   public txHistory: IWalletTx[]; //  array of txs that can be retrieved from light client
 
-  public constructor() {
+  public constructor(address: string) {
     super();
-    getAccountTxHistory();
-    applyIpcHandlers();
+
+    this.setAddress(address);
+    this.getAccountTxHistory();
+    this.applyIpcHandlers();
   }
 
-  public setAddress(address) {
+  private setAddress(address) {
     this.address = address;
-    getAccountTxHistory();
+    this.getAccountTxHistory();
   }
 
   public receiveTx(tx: ITxReceive) {
@@ -41,13 +43,10 @@ export class WalletHistory extends EventEmitter {
 
   private applyIpcHandlers() {
     ipcMain.handle(`wallet-get-history`, async () => {
-      return this.tsHistory;
+      return this.txHistory;
     });
     ipcMain.handle(`wallet-get-receives`, async () => {
-      return this.tsHistory;
-    });
-    ipcMain.handle(`wallet-get-receives`, async () => {
-      return this.tsHistory;
+      return this.txHistory;
     });
   }
 }
