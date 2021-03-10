@@ -20,6 +20,7 @@ const TOP_HEIGHT =
   TOOLBAR_HEIGHT + POINT_TOOLBAR_HEIGHT + DEFAULT_TAB_HEIGHT + 5;
 export class ConfirmationDialog extends PersistentDialog {
   private isVisible = false;
+  private browserWindow: BrowserWindow;
   public bounds: IRectangle;
 
   public constructor() {
@@ -38,11 +39,19 @@ export class ConfirmationDialog extends PersistentDialog {
     this.hide();
   };
 
+  public hide(bringToTop = false, hideVisually = true) {
+    super.hide(bringToTop, hideVisually);
+    if (this.browserWindow) {
+      this.browserWindow.removeListener('resize', this.onResize);
+    }
+  }
+
   public async show(browserWindow: BrowserWindow) {
     super.show(browserWindow, true, false);
 
     browserWindow.once('resize', this.onResize);
-    // this.browserView.webContents.openDevTools({ mode: 'detach' });
+    this.browserWindow = browserWindow;
+    this.browserView.webContents.openDevTools({ mode: 'detach' });
 
     this.send('visible', true, {
       id: Application.instance.windows.current.viewManager.selectedId,

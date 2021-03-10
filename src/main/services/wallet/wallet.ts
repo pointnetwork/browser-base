@@ -17,6 +17,7 @@ export class WalletService extends EventEmitter {
   static instance = new WalletService();
   public address = '';
   public funds = '0';
+  public requestQueue: number[] = [];
 
   public walletHistory: WalletHistory;
 
@@ -47,25 +48,38 @@ export class WalletService extends EventEmitter {
     await this.loadAddress();
     // TODO
     //  query wallet address's balance via light client
-    this.funds = fixed(100);
+    this.funds = fixed(500);
     WalletService.invokeEvent('wallet-update-funds', this.funds);
   }
 
-  public async sendFunds(
+  public requestSendFunds(
     confirmObj: IConfirmation,
     amount: number,
-  ): Promise<string | IWalletError> {
+  ): IWalletError | boolean {
     if (gt(amount, this.funds))
       return createWalletError(
         IWalletErrorTypes.NOT_ENOUGH_FUNDS,
         'Not enough funds',
       );
     // TODO
-    //  invoke the confirmation window and only send funds when confirmed
+    //  invoke the confirmation window
+    const confirmationDialog = Application.instance.dialogs.getPersistent(
+      'confirmation',
+    );
+    console.log('sent confirmation request');
+    confirmationDialog.send('confirmation-request', confirmObj, amount);
 
+    this.requestQueue.push(amount);
+    return true;
+  }
+
+  public sendFunds() {
+    console.log('confirmed send funds');
+    if (this.requestQueue.length === 0) return;
+
+    const amount = this.requestQueue.shift();
     this.funds = minus(this.funds, amount);
     WalletService.invokeEvent('wallet-update-funds', this.funds);
-    return this.funds;
   }
 
   private applyIpcHandlers() {
@@ -76,8 +90,25 @@ export class WalletService extends EventEmitter {
         confirmationObj: IConfirmation,
         amount: number,
       ) => {
-        console.log('wallet send funds');
-        this.sendFunds(confirmationObj, amount);
+        this.requestSendFunds(
+          { ...confirmationObj, windowId: e.frameId },
+          amount,
+        );
+      },
+    );
+
+    ipcMain.handle(
+      'wallet-confirmed-send-funds',
+      async (e: IpcMainInvokeEvent) => {
+        console.log('received confirmed send funds');
+        this.sendFunds();
+      },
+    );
+
+    ipcMain.handle(
+      'wallet-rejected-send-funds',
+      async (e: IpcMainInvokeEvent) => {
+        this.requestQueue.shift();
       },
     );
 

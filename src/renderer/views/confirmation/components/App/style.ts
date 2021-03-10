@@ -50,6 +50,7 @@ export const Wrapper = styled.div`
   background-color: rgba(20, 20, 20, 0.9);
   border-radius: 5px;
   border: 1px rgba(100, 100, 100, 1) solid;
+  color: white;
 
   padding: 10px;
   > section {

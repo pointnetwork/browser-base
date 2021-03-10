@@ -1,10 +1,10 @@
+import { ipcRenderer } from 'electron';
 import { makeObservable, observable } from 'mobx';
 import { IConfirmation } from '~/interfaces/confirmation';
 
 export class Confirmation {
   public id = '';
   public confirmationRequest = '';
-  public confirmed?: boolean = null;
   public logo = '';
   public requestTarget = '';
 
@@ -12,7 +12,6 @@ export class Confirmation {
     makeObservable(this, {
       id: observable,
       confirmationRequest: observable,
-      confirmed: observable,
       requestTarget: observable,
       logo: observable,
     });
@@ -23,12 +22,11 @@ export class Confirmation {
   }
 
   public reject = (): void => {
-    this.confirmed = false;
-    //  reject logic to rpc
+    ipcRenderer.invoke('wallet-rejected-send-funds');
   };
 
   public confirm = (): void => {
-    this.confirmed = true;
-    //  confirm logic to rpc
+    console.log('send confirmed send funds');
+    ipcRenderer.invoke('wallet-confirmed-send-funds');
   };
 }

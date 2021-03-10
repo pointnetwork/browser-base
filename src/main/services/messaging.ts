@@ -116,6 +116,14 @@ export const runMessagingService = (appWindow: AppWindow) => {
     dialog.show(appWindow.win);
   });
 
+  ipcMain.on(`hide-confirmation-dialog-${id}`, (e, data) => {
+    const dialog = Application.instance.dialogs.getPersistent(
+      'confirmation',
+    ) as ConfirmationDialog;
+    dialog.bounds = appWindow.win.getContentBounds();
+    dialog.hide();
+  });
+
   ipcMain.on(`show-zoom-dialog-${id}`, (e, left, top) => {
     showZoomDialog(appWindow.win, left, top);
   });
