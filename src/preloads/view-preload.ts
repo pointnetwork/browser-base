@@ -1,10 +1,20 @@
-import { ipcRenderer, webFrame } from 'electron';
+import { ipcRenderer, webFrame, contextBridge } from 'electron';
 
 import AutoComplete from './models/auto-complete';
 import { getTheme } from '~/utils/themes';
 import { ERROR_PROTOCOL, WEBUI_BASE_URL } from '~/constants/files';
 import { injectChromeWebstoreInstallButton } from './chrome-webstore';
 
+// ipcRenderer methods to allow
+contextBridge.exposeInMainWorld('electronApi', {
+  //  TODO : below method is unsafe - fix to enable per channel type
+  send: (channel, data) => {
+    ipcRenderer.send(channel, data);
+  },
+  receive: (channel, data) => {
+    ipcRenderer.on(channel, data);
+  },
+});
 const tabId = ipcRenderer.sendSync('get-webcontents-id');
 
 export const windowId: number = ipcRenderer.sendSync('get-window-id');

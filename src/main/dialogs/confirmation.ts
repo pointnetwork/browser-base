@@ -41,6 +41,7 @@ export class ConfirmationDialog extends PersistentDialog {
 
   public hide(bringToTop = false, hideVisually = true) {
     super.hide(bringToTop, hideVisually);
+    this.isVisible = false;
     if (this.browserWindow) {
       this.browserWindow.removeListener('resize', this.onResize);
     }
@@ -48,10 +49,9 @@ export class ConfirmationDialog extends PersistentDialog {
 
   public async show(browserWindow: BrowserWindow) {
     super.show(browserWindow, true, false);
-
+    this.isVisible = true;
     browserWindow.once('resize', this.onResize);
     this.browserWindow = browserWindow;
-    this.browserView.webContents.openDevTools({ mode: 'detach' });
 
     this.send('visible', true, {
       id: Application.instance.windows.current.viewManager.selectedId,

@@ -37,7 +37,7 @@ const onNotificationClick = async (e: React.MouseEvent<HTMLDivElement>) => {
 };
 
 const onConfirmationClick = async (e: React.MouseEvent<HTMLDivElement>) => {
-  ipcRenderer.send(`show-confirmation-dialog-${store.windowId}`);
+  ipcRenderer.send(`show-confirmation-dialog-${store.windowId}`, true);
 };
 
 export const PointToolbar = observer(() => {

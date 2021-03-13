@@ -108,10 +108,11 @@ export const runMessagingService = (appWindow: AppWindow) => {
     showNotificationsDialog(appWindow.win, left, top);
   });
 
-  ipcMain.on(`show-confirmation-dialog-${id}`, (e, data) => {
+  ipcMain.on(`show-confirmation-dialog-${id}`, (e, hideIfOpen: boolean) => {
     const dialog = Application.instance.dialogs.getPersistent(
       'confirmation',
     ) as ConfirmationDialog;
+    if (dialog?.isVisible && hideIfOpen) return dialog.hide();
     dialog.bounds = appWindow.win.getContentBounds();
     dialog.show(appWindow.win);
   });
@@ -120,7 +121,6 @@ export const runMessagingService = (appWindow: AppWindow) => {
     const dialog = Application.instance.dialogs.getPersistent(
       'confirmation',
     ) as ConfirmationDialog;
-    dialog.bounds = appWindow.win.getContentBounds();
     dialog.hide();
   });
 

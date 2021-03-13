@@ -65,7 +65,7 @@ export class WindowsService {
   public getAllWindowIds(): number[] {
     return this.list.map((window) => window.id);
   }
-  
+
   public findBrowserWindowById(windowId: number) {
     return this.list.find((x) => x.id === windowId);
   }

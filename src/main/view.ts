@@ -61,13 +61,15 @@ export class View {
         preload: `${app.getAppPath()}/build/view-preload.bundle.js`,
         nodeIntegration: false,
         contextIsolation: true,
-        sandbox: true,
+        sandbox: false,
         enableRemoteModule: false,
         partition: incognito ? 'view_incognito' : 'persist:view',
         plugins: true,
         nativeWindowOpen: true,
         webSecurity: true,
         javascript: true,
+        // TODO : make app work with this set to true
+        worldSafeExecuteJavaScript: false,
       },
     });
 
