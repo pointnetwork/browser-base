@@ -1,4 +1,3 @@
-import { ipcRenderer } from 'electron';
 import { observable, computed, action, makeObservable } from 'mobx';
 import * as React from 'react';
 
@@ -146,11 +145,11 @@ export class ITab {
     if (!this.isClosing) {
       store.tabs.selectedTabId = this.id;
 
-      ipcRenderer.send(`browserview-show-${store.windowId}`);
+      window.electronApi.send(`browserview-show-${store.windowId}`);
 
       const focused = this.addressbarFocused;
 
-      await ipcRenderer.invoke(
+      await window.electronApi.invoke(
         `view-select-${store.windowId}`,
         this.id,
         !this.addressbarFocused,
@@ -245,13 +244,13 @@ export class ITab {
   public close() {
     store.tabs.closedUrl = this.url;
     store.tabs.canShowPreview = false;
-    ipcRenderer.send(`hide-tab-preview-${store.windowId}`);
+    window.electronApi.send(`hide-tab-preview-${store.windowId}`);
 
     const selected = store.tabs.selectedTabId === this.id;
 
     store.startupTabs.removeStartupTabItem(this.id);
 
-    ipcRenderer.send(`view-destroy-${store.windowId}`, this.id);
+    window.electronApi.send(`view-destroy-${store.windowId}`, this.id);
 
     const notClosingTabs = store.tabs.list.filter((x) => !x.isClosing);
     let index = notClosingTabs.indexOf(this);

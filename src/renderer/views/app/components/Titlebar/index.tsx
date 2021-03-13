@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import * as React from 'react';
-import { ipcRenderer, remote } from 'electron';
+import remote from '@electron/remote';
 
 import store from '../../store';
 import { Tabbar } from '../Tabbar';
@@ -12,13 +12,14 @@ import { RightButtons } from '../RightButtons';
 import { Separator } from '../RightButtons/style';
 import { SiteButtons } from '../SiteButtons';
 
-const onCloseClick = () => ipcRenderer.send(`window-close-${store.windowId}`);
+const onCloseClick = () =>
+  window.electronApi.send(`window-close-${store.windowId}`);
 
 const onMaximizeClick = () =>
-  ipcRenderer.send(`window-toggle-maximize-${store.windowId}`);
+  window.electronApi.send(`window-toggle-maximize-${store.windowId}`);
 
 const onMinimizeClick = () =>
-  ipcRenderer.send(`window-minimize-${store.windowId}`);
+  window.electronApi.send(`window-minimize-${store.windowId}`);
 
 const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
   if (store.addressbarFocused) {
@@ -28,6 +29,7 @@ const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
 
 const onFullscreenExit = (e: React.MouseEvent<HTMLDivElement>) => {
   remote.getCurrentWindow().setFullScreen(false);
+  // remote.getCurrentWindow();
 };
 
 export const Titlebar = observer(() => {
@@ -41,16 +43,17 @@ export const Titlebar = observer(() => {
       <Tabbar />
       {store.isCompact && <RightButtons />}
 
-      {platform() !== 'darwin' && (
-        store.isFullscreen
-          ? <FullscreenExitButton
+      {platform() !== 'darwin' &&
+        (store.isFullscreen ? (
+          <FullscreenExitButton
             style={{
               height: store.isCompact ? '100%' : 32,
             }}
             onMouseUp={onFullscreenExit}
             theme={store.theme}
           />
-          : <WindowsControls
+        ) : (
+          <WindowsControls
             style={{
               height: store.isCompact ? '100%' : 32,
               WebkitAppRegion: 'no-drag',
@@ -61,7 +64,7 @@ export const Titlebar = observer(() => {
             onMaximize={onMaximizeClick}
             dark={store.theme['toolbar.lightForeground']}
           />
-      )}
+        ))}
     </StyledTitlebar>
   );
 });

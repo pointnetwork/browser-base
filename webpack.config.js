@@ -48,6 +48,7 @@ const preloadConfig = getConfig({
 
   entry: {
     'view-preload': './src/preloads/view-preload',
+    'window-preload': './src/preloads/window-preload',
   },
 
   plugins: [],

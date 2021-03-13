@@ -25,13 +25,15 @@ export class AppWindow {
       titleBarStyle: 'hiddenInset',
       backgroundColor: '#ffffff',
       webPreferences: {
+        preload: `${app.getAppPath()}/build/window-preload.bundle.js`,
         plugins: true,
         // TODO: enable sandbox, contextIsolation and disable nodeIntegration to improve security
-        nodeIntegration: true,
-        contextIsolation: false,
+        nodeIntegration: false,
+        contextIsolation: true,
         javascript: true,
         // TODO: get rid of the remote module in renderers
         enableRemoteModule: true,
+        worldSafeExecuteJavaScript: true,
       },
       icon: resolve(
         app.getAppPath(),
@@ -39,6 +41,8 @@ export class AppWindow {
       ),
       show: false,
     });
+
+    this.win.webContents.openDevTools({ mode: 'detach' });
 
     this.incognito = incognito;
 

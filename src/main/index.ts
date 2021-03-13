@@ -11,6 +11,12 @@ import { Application } from './application';
 
 export const isNightly = app.name === 'wexond-nightly';
 
+//  allows remote in ipcRenderer
+//  you should use ipcRenderer.invoke instead
+//  but there is too much legacy code to fix that atm.
+// TODO : fix to not use remote https://github.com/electron/remote
+require('@electron/remote/main').initialize();
+
 app.allowRendererProcessReuse = true;
 app.name = isNightly ? 'Point Nightly' : 'Point';
 

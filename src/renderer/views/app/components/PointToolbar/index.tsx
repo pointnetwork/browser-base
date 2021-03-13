@@ -11,13 +11,12 @@ import {
 } from '~/renderer/constants';
 import store from '~/renderer/views/app/store';
 import { ToolbarButton } from '~/renderer/views/app/components/ToolbarButton';
-import { ipcRenderer } from 'electron';
 import { getWebUIURL } from '~/common/webui';
 import { fixed } from '~/utils/Big';
 
 const setTabUrl = (url: string) => {
   console.log('setTabData', url);
-  ipcRenderer.send(`set-tab-${store.windowId}`, {
+  window.electronAPI.send(`set-tab-${store.windowId}`, {
     url,
     active: true,
   });
@@ -29,7 +28,7 @@ const goToWebUIPage = (name: string) => () => {
 
 const onNotificationClick = async (e: React.MouseEvent<HTMLDivElement>) => {
   const { right, bottom } = e.currentTarget.getBoundingClientRect();
-  ipcRenderer.send(
+  window.electronAPI.send(
     `show-notifications-dialog-${store.windowId}`,
     right, //  5 for padding
     bottom,
@@ -37,7 +36,7 @@ const onNotificationClick = async (e: React.MouseEvent<HTMLDivElement>) => {
 };
 
 const onConfirmationClick = async (e: React.MouseEvent<HTMLDivElement>) => {
-  ipcRenderer.send(`show-confirmation-dialog-${store.windowId}`, true);
+  window.electronAPI.send(`show-confirmation-dialog-${store.windowId}`, true);
 };
 
 export const PointToolbar = observer(() => {

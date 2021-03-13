@@ -17,7 +17,6 @@ import {
 } from '~/renderer/constants/icons';
 import { WebUIStyle } from '~/renderer/mixins/default-styles';
 import { getWebUIURL } from '~/common/webui';
-import { Wallet } from '~/renderer/views/newtab/components/Wallet';
 
 window.addEventListener('mousedown', () => {
   store.dashboardSettingsVisible = false;

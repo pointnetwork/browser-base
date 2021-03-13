@@ -231,9 +231,8 @@ export class ViewManager extends EventEmitter {
     // resize the BrowserView's height when the toolbar height changes
     // ex: when the bookmarks bar appears
     this.window.webContents.executeJavaScript(`
-        const {ipcRenderer} = require('electron');
         const resizeObserver = new ResizeObserver(([{ contentRect }]) => {
-          ipcRenderer.send('resize-height');
+          window.electronApi.send('resize-height');
         });
         const app = document.getElementById('app');
         resizeObserver.observe(app);
