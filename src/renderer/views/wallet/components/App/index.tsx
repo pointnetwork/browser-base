@@ -17,7 +17,7 @@ const testClickHandler = () => {
       confirmationRequest: 'test confirmation request',
       requestTarget: 'tester',
       logo: 'img',
-      windowId: 1, //  dummy value
+      windowId: ipcRenderer.sendSync('get-window-id'), //  dummy value
     },
     10,
   );

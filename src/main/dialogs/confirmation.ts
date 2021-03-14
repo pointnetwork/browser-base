@@ -19,8 +19,8 @@ const HEIGHT = 400;
 const TOP_HEIGHT =
   TOOLBAR_HEIGHT + POINT_TOOLBAR_HEIGHT + DEFAULT_TAB_HEIGHT + 5;
 export class ConfirmationDialog extends PersistentDialog {
-  private isVisible = false;
-  private browserWindow: BrowserWindow;
+  public visible = false;
+  public browserWindow: BrowserWindow;
   public bounds: IRectangle;
 
   public constructor() {
@@ -36,12 +36,29 @@ export class ConfirmationDialog extends PersistentDialog {
   }
 
   private onResize = () => {
-    this.hide();
+    const winBounds = this.browserWindow.getContentBounds();
+
+    const display = {
+      height: winBounds.height - TOP_HEIGHT,
+      width: winBounds.width - 20,
+    };
+
+    const dims = {
+      height: Math.min(HEIGHT, display.height),
+      width: Math.min(WIDTH, display.width),
+    };
+
+    super.rearrange({
+      x: display.width - dims.width,
+      y: TOP_HEIGHT,
+      width: dims.width,
+      height: dims.height,
+    });
   };
 
   public hide(bringToTop = false, hideVisually = true) {
     super.hide(bringToTop, hideVisually);
-    this.isVisible = false;
+    this.visible = false;
     if (this.browserWindow) {
       this.browserWindow.removeListener('resize', this.onResize);
     }
@@ -49,8 +66,10 @@ export class ConfirmationDialog extends PersistentDialog {
 
   public async show(browserWindow: BrowserWindow) {
     super.show(browserWindow, true, false);
-    this.isVisible = true;
-    browserWindow.once('resize', this.onResize);
+    this.browserWindow = browserWindow;
+    // this.browserView.webContents.openDevTools({ mode: 'detach' });
+    this.visible = true;
+    browserWindow.on('resize', this.onResize);
     this.browserWindow = browserWindow;
 
     this.send('visible', true, {

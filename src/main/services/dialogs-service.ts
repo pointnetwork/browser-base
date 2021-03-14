@@ -6,6 +6,7 @@ import { PersistentDialog } from '../dialogs/dialog';
 import { Application } from '../application';
 import { IRectangle } from '~/interfaces';
 import { ConfirmationDialog } from '~/main/dialogs/confirmation';
+import { RpcRendererEvent } from '@wexond/rpc-electron';
 
 interface IDialogTabAssociation {
   tabId?: number;
@@ -14,9 +15,16 @@ interface IDialogTabAssociation {
 }
 
 type BoundsDisposition = 'move' | 'resize';
+export type iBound = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
 
 interface IDialogShowOptions {
   name: string;
+  internalId?: number;
   browserWindow: Electron.BrowserWindow;
   hideTimeout?: number;
   devtools?: boolean;
@@ -24,6 +32,10 @@ interface IDialogShowOptions {
   onWindowBoundsUpdate?: (disposition: BoundsDisposition) => void;
   onHide?: (dialog: IDialog) => void;
   getBounds: () => IRectangle;
+  windowEvents?: {
+    resize?: (e) => iBound;
+    move?: (e) => iBound;
+  };
 }
 
 interface IDialog {
@@ -84,15 +96,17 @@ export class DialogsService {
     const {
       name,
       browserWindow,
+      internalId,
       getBounds,
       devtools,
       onHide,
       hideTimeout,
       onWindowBoundsUpdate,
       tabAssociation,
+      windowEvents = {},
     } = options;
-
-    const foundDialog = this.getDynamic(name);
+    const internalName = internalId ? `${name}-${internalId}` : name;
+    const foundDialog = this.getDynamic(internalName);
 
     let browserView = foundDialog
       ? foundDialog.browserView
@@ -135,11 +149,6 @@ export class DialogsService {
       remove?: (id: number) => void;
     } = {};
 
-    const windowEvents: {
-      resize?: () => void;
-      move?: () => void;
-    } = {};
-
     const channels: string[] = [];
 
     const dialog: IDialog = {
@@ -162,7 +171,11 @@ export class DialogsService {
 
         if (tabId && tabId !== selectedId) return;
 
-        browserWindow.webContents.send('dialog-visibility-change', name, false);
+        browserWindow.webContents.send(
+          'dialog-visibility-change',
+          internalName,
+          false,
+        );
 
         browserWindow.removeBrowserView(browserView);
 
@@ -198,12 +211,12 @@ export class DialogsService {
         if (onHide) onHide(dialog);
       },
       handle: (name, cb) => {
-        const channel = `${name}-${browserView.webContents.id}`;
+        const channel = `${internalName}-${browserView.webContents.id}`;
         ipcMain.handle(channel, (...args) => cb(...args));
         channels.push(channel);
       },
       on: (name, cb) => {
-        const channel = `${name}-${browserView.webContents.id}`;
+        const channel = `${internalName}-${browserView.webContents.id}`;
         ipcMain.on(channel, (...args) => cb(...args));
         channels.push(channel);
       },
@@ -222,7 +235,11 @@ export class DialogsService {
 
     tabsEvents.activate = (id) => {
       const visible = dialog.tabIds.includes(id);
-      browserWindow.webContents.send('dialog-visibility-change', name, visible);
+      browserWindow.webContents.send(
+        'dialog-visibility-change',
+        internalName,
+        visible,
+      );
 
       if (visible) {
         dialog._sendTabInfo(id);
@@ -246,13 +263,17 @@ export class DialogsService {
       }
     };
 
-    windowEvents.move = () => {
-      emitWindowBoundsUpdate('move');
-    };
+    windowEvents.move = windowEvents.move
+      ? windowEvents.move
+      : () => {
+          emitWindowBoundsUpdate('move');
+        };
 
-    windowEvents.resize = () => {
-      emitWindowBoundsUpdate('resize');
-    };
+    windowEvents.resize = windowEvents.resize
+      ? windowEvents.resize
+      : () => {
+          emitWindowBoundsUpdate('resize');
+        };
 
     if (tabAssociation) {
       appWindow.viewManager.on('removed', tabsEvents.remove);
@@ -260,14 +281,17 @@ export class DialogsService {
     }
 
     if (onWindowBoundsUpdate) {
-      browserWindow.on(
-        'resize',
-        onWindowBoundsUpdate ? onWindowBoundsUpdate : windowEvents.resize,
-      );
-      browserWindow.on(
-        'move',
-        onWindowBoundsUpdate ? onWindowBoundsUpdate : windowEvents.resize,
-      );
+      browserWindow.on('resize', onWindowBoundsUpdate);
+      browserWindow.on('move', onWindowBoundsUpdate);
+    } else {
+      browserWindow.on('move', (e) => {
+        const bounds = windowEvents.move(e);
+        browserView.setBounds(bounds);
+      });
+      browserWindow.on('resize', (e) => {
+        const bounds = windowEvents.resize(e);
+        browserView.setBounds(bounds);
+      });
     }
 
     browserView.webContents.once('dom-ready', () => {

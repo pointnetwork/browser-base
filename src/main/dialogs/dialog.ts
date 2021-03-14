@@ -45,6 +45,7 @@ export class PersistentDialog {
     devtools,
     hideTimeout,
     webPreferences,
+    isModal,
   }: IOptions) {
     this.browserView = new BrowserView({
       webPreferences: {

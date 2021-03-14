@@ -12,6 +12,7 @@ import { add, fixed, gt, minus } from '~/utils/Big';
 import { WalletHistory } from '~/main/services/wallet/wallet-history';
 import { WindowsService } from '~/main/windows-service';
 import { Application } from '~/main/application';
+import { invokeEvent } from '~/utils/scripts';
 
 export class WalletService extends EventEmitter {
   static instance = new WalletService();
@@ -49,7 +50,7 @@ export class WalletService extends EventEmitter {
     // TODO
     //  query wallet address's balance via light client
     this.funds = fixed(500);
-    WalletService.invokeEvent('wallet-update-funds', this.funds);
+    invokeEvent('wallet-update-funds', this.funds);
   }
 
   public requestSendFunds(
@@ -79,7 +80,7 @@ export class WalletService extends EventEmitter {
 
     const amount = this.requestQueue.shift();
     this.funds = minus(this.funds, amount);
-    WalletService.invokeEvent('wallet-update-funds', this.funds);
+    invokeEvent('wallet-update-funds', this.funds);
   }
 
   private applyIpcHandlers() {
@@ -126,32 +127,6 @@ export class WalletService extends EventEmitter {
         address: this.address,
       };
     });
-  }
-  static invokeEvent(channelName: string, data: unknown) {
-    const windows = WindowsService.instance.list;
-    //  send to all windows
-    windows.forEach((window) => {
-      console.log('invokeEvent', window.id);
-      window.win.webContents.send(channelName, data);
-
-      //  send to all views
-      window.viewManager.views.forEach((view) => {
-        view.webContents.send(channelName, data);
-      });
-    });
-    //  send to all dialogs
-    Application.instance.dialogs.persistentDialogs.forEach((dialog) => {
-      if (dialog?.browserWindow)
-        dialog.browserWindow.webContents.send(channelName, data);
-    });
-    // const windowIds = WindowsService.instance.getAllWindowIds();
-    // console.log('invokeEvent', windowIds);
-    //
-    // windowIds.forEach((value) => {
-    //   console.log('invokeEvent id -', value);
-    //   ipcRenderer.sendTo(value, channelName, data);
-    //   // ipcRenderer.sendTo(value, channelName, data);
-    // });
   }
 }
 

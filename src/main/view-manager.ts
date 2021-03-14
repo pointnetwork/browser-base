@@ -12,6 +12,7 @@ import {
 import { extensions } from 'electron-extensions';
 import { EventEmitter } from 'events';
 import { Application } from './application';
+import { ConfirmationDialog } from '~/main/dialogs/confirmation';
 
 export class ViewManager extends EventEmitter {
   public views = new Map<number, View>();
@@ -30,7 +31,6 @@ export class ViewManager extends EventEmitter {
     this._fullscreen = val;
     this.fixBounds();
   }
-
   public constructor(window: AppWindow, incognito: boolean) {
     super();
 
@@ -52,7 +52,7 @@ export class ViewManager extends EventEmitter {
       const view = this.views.get(this.selectedId);
       if (details.url !== view.url) {
         view.webContents.loadURL(details.url);
-        view.webContents.openDevTools({ mode: 'detach' });
+        // view.webContents.openDevTools({ mode: 'detach' });
       } else {
         view.webContents.reload();
       }
@@ -198,6 +198,19 @@ export class ViewManager extends EventEmitter {
     view.updateNavigationState();
 
     this.emit('activated', id);
+
+    // TODO
+    //  make sure the confirmation window stays at the top when new tabs are created
+    const confirmationDialog = Application.instance.dialogs.getPersistent(
+      'confirmation',
+    );
+    if (confirmationDialog.visible) {
+      try {
+        this.window.win.setTopBrowserView(confirmationDialog.browserView);
+      } catch (ex) {
+        //  confirmation dialog is not attatched to this window - in most cases it's an extra one
+      }
+    }
 
     // TODO: this.emitZoomUpdate(false);
   }

@@ -6,8 +6,6 @@ import {
   DIALOG_TOP,
 } from '~/constants/design';
 
-// TODO
-//  make the notification dialog follow the screen on screen size change
 export const showNotificationsDialog = (
   browserWindow: BrowserWindow,
   x: number,

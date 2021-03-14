@@ -22,6 +22,7 @@ import { showNotificationsDialog } from '~/main/dialogs/notifications';
 import { Confirmation } from '~/renderer/views/confirmation/store/Confirmation';
 import { IConfirmation } from '~/interfaces/confirmation';
 import { ConfirmationDialog } from '~/main/dialogs/confirmation';
+import { showBlockingOverlay } from '~/main/dialogs/blocking-overlay';
 
 export const runMessagingService = (appWindow: AppWindow) => {
   const { id } = appWindow;
@@ -109,15 +110,28 @@ export const runMessagingService = (appWindow: AppWindow) => {
   });
 
   ipcMain.on(`show-confirmation-dialog-${id}`, (e, hideIfOpen: boolean) => {
+    // show blocking overlay for every window
+    Application.instance.windows.list.forEach((window) => {
+      console.log('show blocking overlay - ', window.win.id);
+      showBlockingOverlay(window.win, window.win.id);
+    });
+
     const dialog = Application.instance.dialogs.getPersistent(
       'confirmation',
     ) as ConfirmationDialog;
-    if (dialog?.isVisible && hideIfOpen) return dialog.hide();
+    if (dialog?.visible && hideIfOpen) return dialog.hide();
     dialog.bounds = appWindow.win.getContentBounds();
     dialog.show(appWindow.win);
   });
 
   ipcMain.on(`hide-confirmation-dialog-${id}`, (e, data) => {
+    //  remove blocking overlay for every window
+    Application.instance.dialogs.dialogs.forEach((dialog) => {
+      if (dialog.name.includes('blocking-overlay')) {
+        dialog.hide();
+      }
+    });
+
     const dialog = Application.instance.dialogs.getPersistent(
       'confirmation',
     ) as ConfirmationDialog;
@@ -297,9 +311,4 @@ export const runMessagingService = (appWindow: AppWindow) => {
       bookmarkMenu.createMenu(appWindow, item).popup({ window: appWindow.win });
     },
   );
-
-  //  point related messages
-  ipcMain.handle(`request-confirmation-${id}`, (event, item: IConfirmation) => {
-    //  request confirmation logic
-  });
 };

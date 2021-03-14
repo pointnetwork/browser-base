@@ -92,7 +92,7 @@ export class Application {
 
   private async onReady() {
     await app.whenReady();
-    this.setProxies();
+    // this.setProxies();
 
     new ExtensionServiceHandler();
 
@@ -116,6 +116,9 @@ export class Application {
       }
     });
   }
+
+  public confirmationLock() {}
+  public confirmationUnlock() {}
 
   public setProxies(newProxyRules: string | void) {
     const settings = this.settings.object;
