@@ -92,7 +92,7 @@ export class Application {
 
   private async onReady() {
     await app.whenReady();
-    // this.setProxies();
+    this.setProxies();
 
     new ExtensionServiceHandler();
 
