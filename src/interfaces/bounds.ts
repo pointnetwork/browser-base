@@ -9,3 +9,8 @@ export interface IPoint {
   x?: number;
   y?: number;
 }
+
+export interface IScreenDimensions {
+  width: number;
+  height: number;
+}

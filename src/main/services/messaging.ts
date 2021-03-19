@@ -110,11 +110,14 @@ export const runMessagingService = (appWindow: AppWindow) => {
   });
 
   ipcMain.on(`show-confirmation-dialog-${id}`, (e, hideIfOpen: boolean) => {
-    // show blocking overlay for every window
-    Application.instance.windows.list.forEach((window) => {
-      console.log('show blocking overlay - ', window.win.id);
-      showBlockingOverlay(window.win, window.win.id);
-    });
+    //  prevent multiple overlays by any chance
+    if (!Application.instance.dialogs.getDynamic(`blocking-overlay`)) {
+      // show blocking overlay for every window
+      Application.instance.windows.list.forEach((window) => {
+        console.log('show blocking overlay - ', window.win.id);
+        showBlockingOverlay(window.win, window.win.id);
+      });
+    }
 
     const dialog = Application.instance.dialogs.getPersistent(
       'confirmation',

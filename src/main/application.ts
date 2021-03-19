@@ -1,4 +1,4 @@
-import { app, ipcMain, Menu, session } from 'electron';
+import { app, ipcMain, Menu, session, screen } from 'electron';
 import { isAbsolute, extname } from 'path';
 import { existsSync } from 'fs';
 import { SessionsService } from './sessions-service';
@@ -91,7 +91,21 @@ export class Application {
   }
 
   private async onReady() {
-    await app.whenReady();
+    await app.whenReady().then(() => {
+      const displays = screen.getAllDisplays();
+      const screenDims = { height: 0, width: 0 };
+      displays.forEach((display) => {
+        screenDims.height =
+          screenDims.height < display.bounds.height
+            ? display.bounds.height
+            : screenDims.height;
+        screenDims.width =
+          screenDims.width < display.bounds.width
+            ? display.bounds.width
+            : screenDims.width;
+      });
+      this.dialogs.screenDimensions = screenDims;
+    });
     this.setProxies();
 
     new ExtensionServiceHandler();

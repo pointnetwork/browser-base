@@ -14,28 +14,6 @@ export const Image = styled.div`
   right: 0;
   bottom: 0;
   transition: 0.3s opacity, 1s transform;
-
-  ${({ src }: { src?: string }) => css`
-    opacity: ${src === '' ? 0 : 1};
-    transform: ${src === '' ? 'scale(1.05)' : 'scale(1)'};
-    background-image: url(${src});
-    background-attachment: fixed;
-
-    &:after {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      right: 0;
-      z-index: 2;
-      background-image: radial-gradient(
-          rgba(0, 0, 0, 0) 0%,
-          rgba(0, 0, 0, 0.5) 100%
-        ),
-        radial-gradient(rgba(0, 0, 0, 0) 33%, rgba(0, 0, 0, 0.3) 166%);
-    }
-  `};
 `;
 
 export const Wrapper = styled.div`

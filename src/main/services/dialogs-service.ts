@@ -4,7 +4,7 @@ import { SearchDialog } from '../dialogs/search';
 import { PreviewDialog } from '../dialogs/preview';
 import { PersistentDialog } from '../dialogs/dialog';
 import { Application } from '../application';
-import { IRectangle } from '~/interfaces';
+import { IRectangle, IScreenDimensions } from '~/interfaces';
 import { ConfirmationDialog } from '~/main/dialogs/confirmation';
 import { RpcRendererEvent } from '@wexond/rpc-electron';
 
@@ -59,6 +59,7 @@ export const roundifyRectangle = (rect: IRectangle): IRectangle => {
 };
 
 export class DialogsService {
+  public screenDimensions: IScreenDimensions;
   public browserViews: BrowserView[] = [];
   public browserViewDetails = new Map<number, boolean>();
   public dialogs: IDialog[] = [];
@@ -351,7 +352,7 @@ export class DialogsService {
   }
 
   public getDynamic(name: string) {
-    return this.dialogs.find((x) => x.name === name);
+    return this.dialogs.find((x) => x.name.includes(name));
   }
 
   public getPersistent(name: string) {
