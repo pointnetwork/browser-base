@@ -308,11 +308,6 @@ export class DialogsService {
       );
     }
 
-    ipcMain.on(`hide-${browserView.webContents.id}`, () => {
-      // browserView.webContents.openDevTools({ mode: 'detach' });
-      dialog.hide();
-    });
-
     if (tabAssociation) {
       dialog.on('loaded', () => {
         dialog._sendTabInfo(tabAssociation.tabId);

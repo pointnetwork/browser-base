@@ -77,12 +77,12 @@ export const PointToolbar = observer(() => {
         />
       </StyledToolbar>
       <StyledToolbar>
-        <ToolbarButton
-          onMouseDown={onConfirmationClick}
-          disabled={false}
-          size={16}
-          icon={ICON_CONFIRMATION}
-        />
+        {/*<ToolbarButton*/}
+        {/*  onMouseDown={onConfirmationClick}*/}
+        {/*  disabled={false}*/}
+        {/*  size={16}*/}
+        {/*  icon={ICON_CONFIRMATION}*/}
+        {/*/>*/}
         <ToolbarButton
           toggled={store.dialogsVisibility['notifications']}
           onMouseDown={onNotificationClick}

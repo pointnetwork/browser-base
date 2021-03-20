@@ -62,6 +62,7 @@ applyEntries(appConfig, [
   'notifications',
   'confirmation',
   'blocking-overlay',
+  'console',
 ]);
 
 if (process.env.ENABLE_EXTENSIONS) {
