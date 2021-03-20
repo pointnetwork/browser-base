@@ -78,3 +78,4 @@ export const ICON_NOTIFICATION = require(`~/renderer/resources/icons/point/notif
 export const ICON_CLOSE_X = require(`~/renderer/resources/icons/point/closeX.svg`);
 export const ICON_CONFIRMATION = require(`~/renderer/resources/icons/point/confirmation.svg`);
 export const ICON_NO_PROFILE = require(`~/renderer/resources/icons/point/no-profile.png`);
+export const ICON_TERMINAL = require(`~/renderer/resources/icons/point/terminal.svg`);
