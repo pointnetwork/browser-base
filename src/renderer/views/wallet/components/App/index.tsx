@@ -13,7 +13,6 @@ const testClickHandler = () => {
   ipcRenderer.invoke(
     'wallet-send-funds',
     {
-      id: '1',
       confirmationRequest: 'test confirmation request',
       requestTarget: 'tester',
       logo: 'img',

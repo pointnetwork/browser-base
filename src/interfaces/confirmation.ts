@@ -1,5 +1,4 @@
 export interface IConfirmation {
-  id: string;
   windowId: number;
   confirmationRequest: string;
   requestTarget: string;

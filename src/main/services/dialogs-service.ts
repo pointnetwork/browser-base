@@ -28,6 +28,7 @@ interface IDialogShowOptions {
   browserWindow: Electron.BrowserWindow;
   hideTimeout?: number;
   devtools?: boolean;
+  hideOnLoseFocus?: boolean;
   tabAssociation?: IDialogTabAssociation;
   onWindowBoundsUpdate?: (disposition: BoundsDisposition) => void;
   onHide?: (dialog: IDialog) => void;
@@ -105,6 +106,7 @@ export class DialogsService {
       onWindowBoundsUpdate,
       tabAssociation,
       windowEvents = {},
+      hideOnLoseFocus,
     } = options;
     const internalName = internalId ? `${name}-${internalId}` : name;
     const foundDialog = this.getDynamic(internalName);
@@ -319,6 +321,13 @@ export class DialogsService {
         });
       }
     }
+
+    if (hideOnLoseFocus) {
+      ipcMain.on(`dialog-blur-${browserView.webContents.id}`, () => {
+        dialog.hide();
+      });
+    }
+    browserView.webContents.focus();
 
     this.dialogs.push(dialog);
 

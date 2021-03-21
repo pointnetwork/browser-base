@@ -14,6 +14,7 @@ const onReject = () => {
 };
 
 export const App = observer(() => {
+  const confirmObj = store.getCurrentConfirmation();
   return (
     <ThemeProvider theme={{ ...store.theme }}>
       <StyledApp visible>
@@ -21,7 +22,10 @@ export const App = observer(() => {
           <Title>
             <h1>Confirmation Area</h1>
           </Title>
-          <section>Display Confirmation info</section>
+          <div>
+            {confirmObj.id} - {confirmObj.confirmationRequest}
+          </div>
+          <div>RequestTarget - {confirmObj.requestTarget}</div>
           <button onClick={onConfirm}>Confirm</button>
           <button onClick={onReject}>reject</button>
         </Wrapper>

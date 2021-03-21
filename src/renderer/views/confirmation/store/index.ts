@@ -5,15 +5,18 @@ import { Confirmation } from '~/renderer/views/confirmation/store/Confirmation';
 import { ICON_NO_PROFILE } from '~/renderer/constants';
 import { IConfirmation } from '~/interfaces/confirmation';
 
-const defaultConfirmation = new Confirmation({
-  id: 'test',
-  windowId: 1,
-  confirmationRequest: 'A test confirmation requesting a test',
-  logo: ICON_NO_PROFILE,
-  requestTarget: 'Tester',
-});
+const defaultConfirmation = new Confirmation(
+  {
+    windowId: 1,
+    confirmationRequest: 'A test confirmation requesting a test',
+    logo: ICON_NO_PROFILE,
+    requestTarget: 'Tester',
+  },
+  '0',
+);
 
 export class Store {
+  private id = 0;
   public windowId: number;
   public maxHeight = 0;
   public confirmationQueue: Confirmation[] = [];
@@ -41,7 +44,6 @@ export class Store {
       this.closeConfirmationDialogIfEmpty();
       return;
     }
-    console.log('current', this.current);
     this.current.confirm();
     this.confirmationQueue.shift();
     this.closeConfirmationDialogIfEmpty();
@@ -73,7 +75,9 @@ export class Store {
       (e, confirmObj: IConfirmation, amount: number) => {
         console.log('received confirmation request', confirmObj);
         this.windowId = confirmObj.windowId;
-        this.confirmationQueue.push(new Confirmation(confirmObj));
+        this.confirmationQueue.push(
+          new Confirmation(confirmObj, `${this.id++}`),
+        );
 
         ipcRenderer.send(`show-confirmation-dialog-${confirmObj.windowId}`);
       },

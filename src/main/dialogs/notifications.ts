@@ -16,6 +16,7 @@ export const showNotificationsDialog = (
   const dialog = Application.instance.dialogs.show({
     name: 'notifications',
     browserWindow,
+    hideOnLoseFocus: true,
     getBounds: () => {
       const winBounds = browserWindow.getContentBounds();
       const maxHeight = winBounds.height - DIALOG_TOP - 16;

@@ -57,6 +57,12 @@ export const Wrapper = styled.div`
     padding: 12px;
     margin-top: 8px;
   }
+  > div {
+    padding: 5px;
+  }
+  > button {
+    margin: 5px;
+  }
 `;
 
 export const Title = styled.div`

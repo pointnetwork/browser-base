@@ -106,7 +106,11 @@ export const runMessagingService = (appWindow: AppWindow) => {
   });
 
   ipcMain.on(`show-notifications-dialog-${id}`, (e, left, top) => {
-    showNotificationsDialog(appWindow.win, left, top);
+    const notificationDialog = Application.instance.dialogs.getDynamic(
+      'notifications',
+    );
+    if (notificationDialog) notificationDialog.hide();
+    else showNotificationsDialog(appWindow.win, left, top);
   });
 
   ipcMain.on(`show-confirmation-dialog-${id}`, (e, hideIfOpen: boolean) => {
