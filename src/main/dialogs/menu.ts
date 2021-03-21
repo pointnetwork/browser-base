@@ -9,6 +9,7 @@ export const showMenuDialog = (
 ) => {
   const menuWidth = 330;
   const dialog = Application.instance.dialogs.show({
+    hideOnLoseFocus: true,
     name: 'menu',
     browserWindow,
     getBounds: () => ({

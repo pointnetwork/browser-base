@@ -22,4 +22,9 @@ export const Wrapper = styled.div`
     margin: 10px 0 0 0;
     font-size: 30px;
   }
+
+  // ${({ theme }: { theme?: ITheme }) => css`
+    //   filter: ${!theme['pages.lightForeground'] ? 'invert(100%)' : 'none'};
+    //
+  `};
 `;

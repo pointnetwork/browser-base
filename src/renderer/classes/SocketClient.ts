@@ -10,12 +10,12 @@ const SOCKET = {
   },
 };
 
-const SOCKET_MESSAGES = {
+export const SOCKET_MESSAGES = {
   STATUS: 'socket_status',
   DEPLOYMENT_PROGRESS: 'request_deployment-progress',
 };
 
-const CLIENT_MESSAGES = {
+export const CLIENT_MESSAGES = {
   STATUS: 'status',
   DEPLOYMENT_PROGRESS: 'data',
 };
@@ -32,20 +32,21 @@ interface socketSub {
 }
 
 export class SocketClient extends EventEmitter {
-  public socket: Socket;
+  public socket: Socket | EventEmitter;
   public socketSubs: socketSub[];
 
   private reconnectAttempt = 0;
-  public constructor(socketUrl: string, options: SocketOptions) {
+  public constructor(socketUrl: string, options?: SocketOptions) {
     super();
-    this.socket = io(socketUrl, options);
+    if (socketUrl === '') this.socket = new EventEmitter();
+    else this.socket = io(socketUrl, options);
 
     this.socket.on('open', () => {
       this.reconnectAttempt = 0;
       this.socket.send('status');
     });
 
-    this.socket.on('message', (data: unknown) => {
+    this.socket.on('message', (data: socketObj) => {
       console.log(data);
       this.onMessage(data);
     });
@@ -82,7 +83,7 @@ export class SocketClient extends EventEmitter {
     }
   }
 
-  public onMessage(data: socketObj) {
+  private onMessage(data: socketObj) {
     switch (data.type) {
       case SOCKET_MESSAGES.STATUS: {
         this.emit(CLIENT_MESSAGES.STATUS, data);

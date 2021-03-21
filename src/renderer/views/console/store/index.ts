@@ -14,8 +14,13 @@ export class Store {
     return getTheme(this.settings.theme);
   }
 
+  @computed
+  public get logQueue() {
+    return this.dataStore.logQueue;
+  }
+
   public constructor() {
-    makeObservable(this, { dataStore: observable });
+    makeObservable(this, { settings: observable, dataStore: observable });
 
     (window as any).updateSettings = (settings: ISettings) => {
       this.settings = { ...this.settings, ...settings };
