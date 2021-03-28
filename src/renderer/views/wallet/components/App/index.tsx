@@ -25,6 +25,9 @@ const testClickHandler = () => {
 export default observer(() => {
   return (
     <ThemeProvider theme={{ ...store.theme }}>
+      <header>
+        <title>Point Wallet</title>
+      </header>
       <div>
         <WebUIStyle />
 

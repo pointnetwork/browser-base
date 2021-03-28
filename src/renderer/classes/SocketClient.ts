@@ -1,5 +1,6 @@
-import { io, Socket, SocketOptions } from 'socket.io-client';
 import { EventEmitter } from 'events';
+import { includes } from 'lodash';
+import Socket, { Options } from 'reconnecting-websocket';
 
 const SOCKET = {
   WAIT: {
@@ -18,6 +19,7 @@ export const SOCKET_MESSAGES = {
 export const CLIENT_MESSAGES = {
   STATUS: 'status',
   DEPLOYMENT_PROGRESS: 'data',
+  MESSAGE: 'message',
 };
 
 interface socketObj {
@@ -31,46 +33,65 @@ interface socketSub {
   callback: (...args: unknown[]) => void;
 }
 
+const defaultOptions = Object.freeze({
+  maxReconnectionDelay: 5000,
+  minReconnectionDelay: 2000,
+  reconnectionDelayGrowFactor: 1.3,
+  minUptime: 5000,
+  connectionTimeout: 4000,
+  maxRetries: Infinity,
+  maxEnqueuedMessages: Infinity,
+  startClosed: false,
+  debug: false,
+});
+
 export class SocketClient extends EventEmitter {
-  public socket: Socket | EventEmitter;
+  public socket: Socket;
   public socketSubs: socketSub[];
 
   private reconnectAttempt = 0;
-  public constructor(socketUrl: string, options?: SocketOptions) {
+  public constructor(socketUrl: string, options?: Options) {
     super();
-    if (socketUrl === '') this.socket = new EventEmitter();
-    else this.socket = io(socketUrl, options);
+    // if (socketUrl === '') this.socket = new EventEmitter();
+    this.socket = new Socket(socketUrl, [], {
+      ...defaultOptions,
+      ...options,
+    });
 
-    this.socket.on('open', () => {
+    this.socket.addEventListener('open', (e) => {
+      console.log('[SOCKET] socket connected');
       this.reconnectAttempt = 0;
       this.socket.send('status');
     });
-
-    this.socket.on('message', (data: socketObj) => {
-      console.log(data);
-      this.onMessage(data);
-    });
-
-    //  stuff for socket io
-    this.socket.on('connect_error', () => {
-      //  try reconnect
-      if (this.reconnectAttempt++ < SOCKET.WAIT.RECONNECT) {
-        setTimeout(() => this.socket.connect(), SOCKET.WAIT.RECONNECT);
-      } else {
-        console.error('[SOCKET] reconnect fail');
-      }
-    });
-    this.socket.on('disconnect', (reason) => {
-      if (reason === 'io server disconnect') {
-        // the disconnection was initiated by the server, you need to reconnect manually
-        this.socket.connect();
-      }
+    this.socket.addEventListener('close', (e) => {
       console.log('[SOCKET] socket was disconneted, reconnecting...');
+      this.emit(CLIENT_MESSAGES.STATUS, 'Disconnected - attempting reconnect');
+    });
+
+    this.socket.addEventListener('message', (msg) => {
+      this.processMsg(msg);
     });
   }
 
+  private processMsg(msg: MessageEvent) {
+    if (msg.type) {
+      try {
+        const parsed = JSON.parse(msg.data);
+        const type = parsed.type;
+        if (!type) this.emit(CLIENT_MESSAGES.MESSAGE, msg.data);
+        else
+          this.onMessage({
+            type,
+            status: parsed?.status,
+            data: parsed.data,
+          });
+      } catch {
+        this.emit(CLIENT_MESSAGES.MESSAGE, msg.data);
+      }
+    }
+  }
+
   public socketOn(evName: string, callback: (...args: unknown[]) => void) {
-    this.socket.on(evName, callback);
     this.socketSubs.push({ evName, callback });
   }
 
@@ -78,7 +99,6 @@ export class SocketClient extends EventEmitter {
   public unsubAll() {
     let subObj = this.socketSubs.pop();
     while (subObj) {
-      this.socket.off(subObj.evName, subObj.callback);
       subObj = this.socketSubs.pop();
     }
   }

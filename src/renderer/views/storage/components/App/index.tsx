@@ -9,6 +9,9 @@ import { WebUIStyle } from '~/renderer/mixins/default-styles';
 export default observer(() => {
   return (
     <ThemeProvider theme={{ ...store.theme }}>
+      <header>
+        <title>Point Storage</title>
+      </header>
       <div>
         <WebUIStyle />
         <Wrapper fullSize={true}>Storage</Wrapper>

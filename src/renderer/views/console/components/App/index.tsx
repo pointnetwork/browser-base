@@ -10,6 +10,9 @@ import Terminal from '~/renderer/views/console/components/Terminal';
 export default observer(() => {
   return (
     <ThemeProvider theme={{ ...store.theme }}>
+      <header>
+        <title>Point Console</title>
+      </header>
       <div>
         <WebUIStyle />
         <Wrapper fullSize={true}>

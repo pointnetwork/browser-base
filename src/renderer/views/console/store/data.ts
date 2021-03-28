@@ -9,10 +9,20 @@ import {
 export interface ILogItem {
   id: number; //  native counter
   timestamp: number; //  item log time
-  content: string | string[]; //  content
+  content: string | IFileProgress[]; //  content
 }
 
 const MAX_LOG_ITEMS = 1000;
+export interface IFileProgress {
+  filename: string;
+  progress: number;
+  status: string;
+}
+interface IProgressObject {
+  data: IFileProgress[];
+  status?: string;
+  type: string;
+}
 export class DataStore {
   private currentId = 0;
 
@@ -22,10 +32,55 @@ export class DataStore {
   public constructor() {
     makeObservable(this, { logQueue: observable });
 
-    ipcRenderer.on('log-event', (_, content: string | string[]) => {
+    ipcRenderer.on('log-event', (_, content: string) => {
       this.push(content);
     });
     this.push('Logs Hooked');
+    const client = new SocketClient('ws://localhost:2469/ws/deploy/progress');
+    client.on(CLIENT_MESSAGES.DEPLOYMENT_PROGRESS, (data: IProgressObject) => {
+      console.log('progress - ', data);
+      this.groupPush(data.data);
+    });
+
+    client.on(CLIENT_MESSAGES.STATUS, (data) => {
+      console.log('status?', data);
+      this.push(data);
+    });
+
+    client.on(CLIENT_MESSAGES.MESSAGE, (data) => {
+      console.log('message', data);
+      this.push(data);
+    });
+  }
+
+  public push(content: string) {
+    this.logQueue.push({
+      id: this.currentId++,
+      timestamp: Date.now(),
+      content,
+    });
+    this.limitLogQueue();
+  }
+
+  public groupPush(items: IFileProgress[]) {
+    const content: IFileProgress[] = [];
+    const progressing: IFileProgress[] = [];
+    items.forEach((v) => {
+      if (v.progress === 100) content.push(v);
+      else progressing.push(v);
+    });
+    this.logQueue.push({
+      id: this.currentId++,
+      timestamp: Date.now(),
+      content: [...content, ...progressing],
+    });
+    this.limitLogQueue();
+  }
+
+  private limitLogQueue() {
+    if (this.logQueue.length > MAX_LOG_ITEMS) {
+      this.logQueue.shift();
+    }
   }
 
   public test() {
@@ -52,29 +107,5 @@ export class DataStore {
       percent = percent + 10;
       if (percent > 100) clearInterval(interval);
     }, 1000);
-  }
-
-  public push(content: string | string[]) {
-    if (typeof content !== 'string') return this.groupPush(content);
-    console.log('this this pushed?', content);
-    this.logQueue.push({
-      id: this.currentId++,
-      timestamp: Date.now(),
-      content,
-    });
-    if (this.logQueue.length > MAX_LOG_ITEMS) {
-      this.logQueue.shift();
-    }
-  }
-
-  public groupPush(items: string[]) {
-    this.logQueue.push({
-      id: this.currentId++,
-      timestamp: Date.now(),
-      content: items,
-    });
-    if (this.logQueue.length > MAX_LOG_ITEMS) {
-      this.logQueue.shift();
-    }
   }
 }

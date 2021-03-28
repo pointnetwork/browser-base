@@ -23,9 +23,9 @@ export const TerminalContainer = styled.div`
 
   line-height: 1;
 
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  //&::-webkit-scrollbar {
+  //  display: none;
+  //}
   > ul {
     background-color: rgba(3, 160, 98, 0.1);
     width: 100%;
@@ -43,8 +43,15 @@ export const LogItem = styled.li`
     }
     column-span: 1;
   }
-  > .content {
+  .content {
     column-span: 1;
+    user-select: text;
+    > p {
+      user-select: text;
+    }
+    .progress {
+      user-select: none;
+    }
   }
   .multiline {
     display: grid;
