@@ -32,4 +32,11 @@ export interface ISettings {
   topBarVariant: TopBarVariant;
   proxyRules: string;
   proxyBypassRules: string;
+  wallet: walletSettings;
+}
+
+interface walletSettings {
+  address: string;
+  walletId: string;
+  passcode: string;
 }

@@ -19,8 +19,16 @@ export class Store {
     return this.dataStore.logQueue;
   }
 
+  @computed
+  public get progressQueue() {
+    return this.dataStore.progressQueue;
+  }
+
   public constructor() {
-    makeObservable(this, { settings: observable, dataStore: observable });
+    makeObservable(this, {
+      settings: observable,
+      dataStore: observable,
+    });
 
     (window as any).updateSettings = (settings: ISettings) => {
       this.settings = { ...this.settings, ...settings };

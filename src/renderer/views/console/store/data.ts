@@ -9,7 +9,7 @@ import {
 export interface ILogItem {
   id: number; //  native counter
   timestamp: number; //  item log time
-  content: string | IFileProgress[]; //  content
+  content: string; //  content
 }
 
 const MAX_LOG_ITEMS = 1000;
@@ -21,16 +21,17 @@ export interface IFileProgress {
 interface IProgressObject {
   data: IFileProgress[];
   status?: string;
-  type: string;
+  timestamp: number;
 }
 export class DataStore {
   private currentId = 0;
 
   @observable
   public logQueue: ILogItem[] = [];
+  public progressQueue: IProgressObject[] = [];
 
   public constructor() {
-    makeObservable(this, { logQueue: observable });
+    makeObservable(this, { logQueue: observable, progressQueue: observable });
 
     ipcRenderer.on('log-event', (_, content: string) => {
       this.push(content);
@@ -43,7 +44,10 @@ export class DataStore {
     });
 
     client.on(CLIENT_MESSAGES.STATUS, (data) => {
-      console.log('status?', data);
+      console.log('status?');
+      if (data === 'Disconnected - attempting reconnect') {
+        this.progressQueue.length = 0;
+      }
       this.push(data);
     });
 
@@ -63,18 +67,17 @@ export class DataStore {
   }
 
   public groupPush(items: IFileProgress[]) {
-    const content: IFileProgress[] = [];
+    const data: IFileProgress[] = [];
     const progressing: IFileProgress[] = [];
     items.forEach((v) => {
-      if (v.progress === 100) content.push(v);
+      if (v.progress === 100) data.push(v);
       else progressing.push(v);
     });
-    this.logQueue.push({
-      id: this.currentId++,
+
+    this.progressQueue.push({
       timestamp: Date.now(),
-      content: [...content, ...progressing],
+      data: [...data, ...progressing],
     });
-    this.limitLogQueue();
   }
 
   private limitLogQueue() {

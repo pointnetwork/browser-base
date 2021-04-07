@@ -44,6 +44,7 @@ export const LogItem = styled.li`
     column-span: 1;
   }
   .content {
+    word-break: break-all;
     column-span: 1;
     user-select: text;
     > p {

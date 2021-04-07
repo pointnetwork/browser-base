@@ -13,6 +13,7 @@ import { WalletHistory } from '~/main/services/wallet/wallet-history';
 import { WindowsService } from '~/main/windows-service';
 import { Application } from '~/main/application';
 import { invokeEvent } from '~/utils/scripts';
+import { WALLET_API } from '~/constants/api';
 
 export class WalletService extends EventEmitter {
   static instance = new WalletService();

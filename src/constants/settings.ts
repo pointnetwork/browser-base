@@ -29,4 +29,10 @@ export const DEFAULT_SETTINGS: ISettings = {
   topBarVariant: 'default',
   proxyRules: 'http://localhost:2468',
   proxyBypassRules: 'http://localhost:4445',
+
+  wallet: {
+    address: '',
+    walletId: '',
+    passcode: '',
+  },
 };
