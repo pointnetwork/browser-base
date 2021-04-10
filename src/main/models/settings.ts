@@ -10,9 +10,12 @@ import { runAdblockService, stopAdblockService } from '../services/adblock';
 import { Application } from '../application';
 import { WEBUI_BASE_URL } from '~/constants/files';
 import { ISettings } from '~/interfaces';
+import { forkHook } from '~/main/hook';
 
 export class Settings extends EventEmitter {
   public object = DEFAULT_SETTINGS;
+
+  public extraSettings: unknown;
 
   private queue: string[] = [];
 
@@ -20,11 +23,15 @@ export class Settings extends EventEmitter {
 
   public constructor() {
     super();
-
+    if (process.env.FORK) {
+      this.extraSettings = forkHook('settings');
+    }
     ipcMain.on(
       'save-settings',
       (e, { settings }: { settings: string; incognito: boolean }) => {
-        this.updateSettings(JSON.parse(settings));
+        const parsed = JSON.parse(settings);
+        parsed.additionalSettings = undefined;
+        this.updateSettings(parsed);
       },
     );
 
@@ -202,8 +209,11 @@ export class Settings extends EventEmitter {
   }
 
   public updateSettings(settings: Partial<ISettings>) {
-    if (this.object.proxyRules !== settings.proxyRules) {
-      Application.instance.setProxies(settings.proxyRules);
+    if (
+      this.object.extendedSettings?.proxyRules !==
+      settings.extendedSettings?.proxyRules
+    ) {
+      Application.instance.setProxies(settings?.proxyRules);
     }
     this.object = { ...this.object, ...settings };
 

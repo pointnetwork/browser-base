@@ -1,5 +1,4 @@
 import { EventEmitter } from 'events';
-import { includes } from 'lodash';
 import Socket, { Options } from 'reconnecting-websocket';
 
 const SOCKET = {

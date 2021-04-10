@@ -6,6 +6,11 @@ if (process.env.NODE_ENV === 'development') {
   require('source-map-support').install();
 }
 
+// check for point
+import { FORK_TYPES } from '../constants/fork';
+
+(process.env as any)['FORK'] = FORK_TYPES.POINT;
+
 import { platform } from 'os';
 import { Application } from './application';
 

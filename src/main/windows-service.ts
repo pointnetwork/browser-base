@@ -1,13 +1,14 @@
-import { AppWindow } from './windows/app';
+import { AppWindow } from './windows';
 import { extensions } from 'electron-extensions';
 import { BrowserWindow, ipcMain, session } from 'electron';
-import { Application } from '~/main/application';
-import { WalletService } from './services/wallet/wallet';
+import { WalletService } from './fork/point/wallet/wallet';
+import { forkHook } from '~/main/hook';
 
 export class WindowsService {
   static instance = new WindowsService();
 
-  public Wallet = WalletService.instance;
+  public externalClient: unknown;
+
   public list: AppWindow[] = [];
 
   public current: AppWindow;
@@ -15,6 +16,10 @@ export class WindowsService {
   public lastFocused: AppWindow;
 
   constructor() {
+    if (process.env.FORK) {
+      this.externalClient = forkHook('client');
+    }
+
     if (process.env.ENABLE_EXTENSIONS) {
       extensions.tabs.on('activated', (tabId, windowId, focus) => {
         const win = this.list.find((x) => x.id === windowId);

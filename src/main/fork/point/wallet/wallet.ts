@@ -9,7 +9,7 @@ import {
 } from '~/interfaces/wallet';
 import { ITxReceive, ITxSend } from '~/interfaces/tx';
 import { add, fixed, gt, minus } from '~/utils/Big';
-import { WalletHistory } from '~/main/services/wallet/wallet-history';
+import { WalletHistory } from '~/main/fork/point/wallet/wallet-history';
 import { WindowsService } from '~/main/windows-service';
 import { Application } from '~/main/application';
 import { invokeEvent } from '~/utils/scripts';

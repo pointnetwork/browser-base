@@ -131,9 +131,6 @@ export class Application {
     });
   }
 
-  public confirmationLock() {}
-  public confirmationUnlock() {}
-
   public setProxies(newProxyRules: string | void) {
     const settings = this.settings.object;
     const proxyRules = newProxyRules ? newProxyRules : settings.proxyRules;

@@ -30,13 +30,7 @@ export interface ISettings {
   downloadsPath: string;
   doNotTrack: boolean;
   topBarVariant: TopBarVariant;
-  proxyRules: string;
-  proxyBypassRules: string;
-  wallet: walletSettings;
-}
 
-interface walletSettings {
-  address: string;
-  walletId: string;
-  passcode: string;
+  //  external settings applied from non-wexond context - in this case point
+  extendedSettings: unknown;
 }
