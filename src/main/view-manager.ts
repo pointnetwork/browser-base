@@ -144,6 +144,7 @@ export class ViewManager extends EventEmitter {
     const view = new View(this.window, details.url, this.incognito);
 
     const { webContents } = view.browserView;
+    webContents.openDevTools({ mode: 'detach' });
     const { id } = view;
 
     this.views.set(id, view);

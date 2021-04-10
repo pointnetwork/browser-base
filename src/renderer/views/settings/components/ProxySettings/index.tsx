@@ -6,6 +6,8 @@ import { isProxy } from '~/utils';
 import { BLUE_500 } from '~/renderer/constants';
 import { Button } from '~/renderer/components/Button';
 import { DEFAULT_SETTINGS } from '~/constants';
+import { IPointSettings } from '~/main/fork/point/interfaces/settings';
+import { POINT_SETTINGS } from '~/main/fork/point/constants/settings';
 
 const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
   if (e.key !== 'Enter') return;
@@ -19,26 +21,27 @@ const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     alert(`${contents} is not a valid url`);
     return;
   }
-  store.settings.proxyRules = contents;
+  const pointSettings = store.settings.extendedSettings as IPointSettings;
+
+  pointSettings.proxyRules = contents;
   store.save(true);
 };
 
 const applyDefault = () => {
-  store.settings.proxyRules = DEFAULT_SETTINGS.proxyRules;
+  const pointSettings = store.settings.extendedSettings as IPointSettings;
+  pointSettings.proxyRules = POINT_SETTINGS.proxyRules;
   store.save(true);
 };
 
 export const ProxySettings = observer(() => {
+  const pointSettings = store.settings.extendedSettings as IPointSettings;
   return (
     <>
       <Header>Proxy Settings</Header>
       <Row style={{ justifyContent: 'space-between' }}>
         <Title>Apply new proxy settings</Title>
         <div style={{ minWidth: '200px', width: '200px', height: '25px' }}>
-          <Input
-            placeholder={store.settings.proxyRules}
-            onKeyDown={onKeyDown}
-          />
+          <Input placeholder={pointSettings.proxyRules} onKeyDown={onKeyDown} />
         </div>
       </Row>
       <Row style={{ justifyContent: 'flex-end' }}>

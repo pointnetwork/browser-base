@@ -86,7 +86,6 @@ export class Store {
 
   constructor() {
     makeObservable(this);
-
     (window as any).updateSettings = (settings: ISettings) => {
       this.settings = { ...this.settings, ...settings };
     };

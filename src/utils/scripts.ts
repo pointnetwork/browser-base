@@ -21,9 +21,13 @@ export function invokeEvent(
       view.webContents.send(channelName, data);
     });
   });
-  //  send to all dialogs
-  Application.instance.dialogs.persistentDialogs.forEach((dialog) => {
-    if (dialog?.browserWindow)
-      dialog.browserWindow.webContents.send(channelName, data);
-  });
+  //  send to all dialog
+  try {
+    Application.instance.dialogs.persistentDialogs.forEach((dialog) => {
+      if (dialog?.browserWindow)
+        dialog.browserWindow.webContents.send(channelName, data);
+    });
+  } catch (e) {
+    console.log('failed webcontents send to persistentDialogs', e);
+  }
 }

@@ -13,6 +13,7 @@ import { DialogsService } from './services/dialogs-service';
 import { requestAuth } from './dialogs/auth';
 import { NetworkServiceHandler } from './network/network-service-handler';
 import { ExtensionServiceHandler } from './extension-service-handler';
+import { forkHook } from '~/main/hook';
 
 export class Application {
   public static instance = new Application();
@@ -26,6 +27,12 @@ export class Application {
   public windows = WindowsService.instance;
 
   public dialogs = new DialogsService();
+
+  public constructor() {
+    if (process.env.FORK) {
+      this.externalClient = forkHook('client');
+    }
+  }
 
   public start() {
     const gotTheLock = app.requestSingleInstanceLock();
@@ -83,10 +90,6 @@ export class Application {
       this.windows.open(incognito);
     });
 
-    ipcMain.on('apply-proxy', () => {
-      this.setProxies();
-    });
-
     this.onReady();
   }
 
@@ -106,7 +109,6 @@ export class Application {
       });
       this.dialogs.screenDimensions = screenDims;
     });
-    this.setProxies();
 
     new ExtensionServiceHandler();
 
@@ -129,29 +131,5 @@ export class Application {
         this.windows.open();
       }
     });
-  }
-
-  public setProxies(newProxyRules: string | void) {
-    const settings = this.settings.object;
-    const proxyRules = newProxyRules ? newProxyRules : settings.proxyRules;
-    const proxyBypassRules = settings.proxyBypassRules;
-    session
-      .fromPartition('persist:view')
-      .setProxy({ proxyRules, proxyBypassRules })
-      .then(() => {
-        console.log('proxy applied - webviewsession', {
-          proxyRules,
-          proxyBypassRules,
-        });
-      });
-    session
-      .fromPartition('view_incognito')
-      .setProxy({ proxyRules, proxyBypassRules })
-      .then(() => {
-        console.log('proxy applied - incognito', {
-          proxyRules,
-          proxyBypassRules,
-        });
-      });
   }
 }

@@ -10,7 +10,7 @@ import { runAdblockService, stopAdblockService } from '../services/adblock';
 import { Application } from '../application';
 import { WEBUI_BASE_URL } from '~/constants/files';
 import { ISettings } from '~/interfaces';
-import { forkHook } from '~/main/hook';
+import { forkActionHook, forkHook } from '~/main/hook';
 
 export class Settings extends EventEmitter {
   public object = DEFAULT_SETTINGS;
@@ -30,7 +30,8 @@ export class Settings extends EventEmitter {
       'save-settings',
       (e, { settings }: { settings: string; incognito: boolean }) => {
         const parsed = JSON.parse(settings);
-        parsed.additionalSettings = undefined;
+        if (parsed?.extendedSettings && process.env.FORK)
+          forkActionHook('settings', 'save', parsed.extendedSettings);
         this.updateSettings(parsed);
       },
     );
@@ -38,13 +39,30 @@ export class Settings extends EventEmitter {
     ipcMain.on('get-settings-sync', async (e) => {
       await this.onLoad();
       this.update();
-      e.returnValue = this.object;
+      if (process.env.FORK) {
+        const extended = forkActionHook('settings', 'load') as Record<
+          string,
+          unknown
+        >;
+        this.object.extendedSettings = extended;
+        e.returnValue = this.object;
+      } else {
+        e.returnValue = this.object;
+      }
     });
 
     ipcMain.on('get-settings', async (e) => {
       await this.onLoad();
       this.update();
-      e.sender.send('update-settings', this.object);
+      let object;
+      if (process.env.FORK) {
+        const extended = forkActionHook('settings', 'load') as Record<
+          string,
+          unknown
+        >;
+        object = { ...this.object, extendedSettings: { ...extended } };
+      } else object = this.object;
+      e.sender.send('update-settings', object);
     });
 
     ipcMain.on('downloads-path-change', async () => {
@@ -170,9 +188,13 @@ export class Settings extends EventEmitter {
 
   private async save() {
     try {
+      const objToSave = { ...this.object };
+
+      objToSave.extendedSettings = undefined;
+
       await promises.writeFile(
         getPath('settings.json'),
-        JSON.stringify({ ...this.object, version: DEFAULT_SETTINGS.version }),
+        JSON.stringify({ ...objToSave, version: DEFAULT_SETTINGS.version }),
       );
 
       if (this.queue.length >= 3) {
@@ -209,12 +231,6 @@ export class Settings extends EventEmitter {
   }
 
   public updateSettings(settings: Partial<ISettings>) {
-    if (
-      this.object.extendedSettings?.proxyRules !==
-      settings.extendedSettings?.proxyRules
-    ) {
-      Application.instance.setProxies(settings?.proxyRules);
-    }
     this.object = { ...this.object, ...settings };
 
     this.addToQueue();
