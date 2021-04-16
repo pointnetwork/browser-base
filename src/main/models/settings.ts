@@ -13,6 +13,8 @@ import { ISettings } from '~/interfaces';
 import { forkActionHook, forkHook } from '~/main/hook';
 
 export class Settings extends EventEmitter {
+  static instance = new Settings();
+
   public object = DEFAULT_SETTINGS;
 
   public extraSettings: unknown;
@@ -23,15 +25,10 @@ export class Settings extends EventEmitter {
 
   public constructor() {
     super();
-    if (process.env.FORK) {
-      this.extraSettings = forkHook('settings');
-    }
     ipcMain.on(
       'save-settings',
       (e, { settings }: { settings: string; incognito: boolean }) => {
         const parsed = JSON.parse(settings);
-        if (parsed?.extendedSettings && process.env.FORK)
-          forkActionHook('settings', 'save', parsed.extendedSettings);
         this.updateSettings(parsed);
       },
     );
@@ -84,6 +81,11 @@ export class Settings extends EventEmitter {
 
     this.load();
   }
+
+  public getSettings = async () => {
+    await this.onLoad();
+    return this.object;
+  };
 
   private onLoad = async (): Promise<void> => {
     return new Promise((resolve) => {
@@ -142,7 +144,7 @@ export class Settings extends EventEmitter {
     try {
       const file = await promises.readFile(getPath('settings.json'), 'utf8');
       const json = JSON.parse(file);
-
+      console.log('settings load >>', json);
       if (typeof json.version === 'string') {
         // Migrate from 3.1.0
         Application.instance.storage.remove({
@@ -167,12 +169,18 @@ export class Settings extends EventEmitter {
       if (json.darkTheme !== undefined) {
         delete json.darkTheme;
       }
-
       this.object = {
         ...this.object,
         ...json,
         version: DEFAULT_SETTINGS.version,
       };
+      if (process.env.FORK) {
+        const extended = forkActionHook('settings', 'load') as Record<
+          string,
+          unknown
+        >;
+        this.object.extendedSettings = extended;
+      }
 
       this.loaded = true;
 
@@ -232,7 +240,8 @@ export class Settings extends EventEmitter {
 
   public updateSettings(settings: Partial<ISettings>) {
     this.object = { ...this.object, ...settings };
-
+    if (settings?.extendedSettings && process.env.FORK)
+      forkActionHook('settings', 'save', settings.extendedSettings);
     this.addToQueue();
   }
 }

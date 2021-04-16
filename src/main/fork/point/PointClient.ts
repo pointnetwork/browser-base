@@ -11,8 +11,7 @@ export class PointClient extends ForkClient {
 
   public constructor() {
     super();
-    this.wallet = WalletService.instance;
-
+    this.wallet = new WalletService();
     ipcMain.on('apply-proxy', () => {
       this.setProxies();
     });
@@ -21,7 +20,7 @@ export class PointClient extends ForkClient {
 
   public async onReady() {
     await app.whenReady();
-    console.log('getting settings>>>>');
+    this.wallet.loadSettings();
     this.settings.getSettings().then(() => {
       console.log('got settings>>>>');
       this.setProxies();

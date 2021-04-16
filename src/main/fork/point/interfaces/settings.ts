@@ -6,8 +6,7 @@ export interface IPointSettings {
   version: number;
 }
 
-interface IWalletSettings {
-  address: string;
+export interface IWalletSettings {
   walletId: string;
   passcode: string;
 }

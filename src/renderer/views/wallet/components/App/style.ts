@@ -21,6 +21,8 @@ export const Wrapper = styled.div`
     margin-top: 20px;
     > p {
       font-size: 15px;
+      max-width: 400px;
+      word-break: break-word;
     }
   }
 `;

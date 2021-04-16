@@ -39,8 +39,13 @@ export class PointSettings extends EventEmitter {
   private async load() {
     try {
       const file = await promises.readFile(getPath(SETTINGS_FILENAME), 'utf8');
-      const json = JSON.parse(file);
-
+      let json;
+      try {
+        json = JSON.parse(file);
+      } catch (ex) {
+        json = POINT_SETTINGS;
+        console.log('Point Settings load fail');
+      }
       this.object = {
         ...this.object,
         ...json,
@@ -52,6 +57,7 @@ export class PointSettings extends EventEmitter {
       this.addToQueue();
       this.emit('load');
     } catch (e) {
+      console.warn('load failed', e);
       this.loaded = true;
       this.emit('load');
     }
@@ -84,7 +90,6 @@ export class PointSettings extends EventEmitter {
         getPath(SETTINGS_FILENAME),
         JSON.stringify({ ...this.object, version: POINT_SETTINGS.version }),
       );
-
       if (this.queue.length >= 3) {
         for (let i = this.queue.length - 1; i > 0; i--) {
           this.removeAllListeners(this.queue[i]);
@@ -93,7 +98,6 @@ export class PointSettings extends EventEmitter {
       } else {
         this.queue.splice(0, 1);
       }
-
       if (this.queue[0]) {
         this.emit(this.queue[0]);
       }

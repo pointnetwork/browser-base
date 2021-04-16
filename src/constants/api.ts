@@ -1,4 +1,6 @@
-export const WALLET_API = {
+import { IApiObject } from '~/utils/api';
+
+export const WALLET_API: IApiObject = {
   BASE: 'http://localhost:2468/api/wallet',
   ROUTES: {
     GENERATE: {

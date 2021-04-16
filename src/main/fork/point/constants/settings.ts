@@ -5,7 +5,6 @@ export const POINT_SETTINGS: IPointSettings = {
   proxyBypassRules: 'http://localhost:4445',
 
   wallet: {
-    address: '',
     walletId: '',
     passcode: '',
   },

@@ -14,17 +14,27 @@ import { WindowsService } from '~/main/windows-service';
 import { Application } from '~/main/application';
 import { invokeEvent } from '~/utils/scripts';
 import { WALLET_API } from '~/constants/api';
+import { Settings } from '~/main/models/settings';
+import {
+  IPointSettings,
+  IWalletSettings,
+} from '~/main/fork/point/interfaces/settings';
+import axios from 'axios';
+import { apiRequest } from '~/utils/api';
 
 export class WalletService extends EventEmitter {
-  static instance = new WalletService();
   public address = '';
+  public hash = '';
   public funds = '0';
   public requestQueue: number[] = [];
+  public walletSettings: IWalletSettings;
 
   public walletHistory: WalletHistory;
+  private loaded = false;
 
   public constructor() {
     super();
+
     this.getAccountFunds();
     // TODO
     //  add listener that listens to the connected light client
@@ -39,11 +49,68 @@ export class WalletService extends EventEmitter {
     this.applyIpcHandlers();
   }
 
+  public loadSettings() {
+    Settings.instance.getSettings().then((settings) => {
+      const pointSettings = settings.extendedSettings as IPointSettings;
+      this.walletSettings = pointSettings.wallet;
+      if (
+        this.walletSettings.walletId === '' ||
+        this.walletSettings.passcode === ''
+      ) {
+        this.initWallet().then(() => {
+          this.loadPublicAddress();
+          this.loadAccountHash();
+        });
+      } else {
+        //  wallet is loaded
+        console.log('wallet was loaded');
+        this.loaded = true;
+        this.loadPublicAddress();
+        this.loadAccountHash();
+      }
+    });
+  }
+
+  public async loadPublicAddress(): Promise<void> {
+    if (!this.loaded) return;
+    console.log('request public address');
+    const { data } = await apiRequest(WALLET_API, 'PUBLIC_KEY', {
+      headers: this.headers,
+    });
+    if (data?.status === 200) {
+      const resData = data.data as Record<string, string>;
+      this.address = resData?.publicKey;
+      this.emit('load');
+    }
+  }
+
+  private async initWallet() {
+    const { data } = await apiRequest(WALLET_API, 'GENERATE');
+    const walletData = data.data as IWalletSettings;
+    this.walletSettings.walletId = walletData.walletId;
+    this.walletSettings.passcode = walletData.passcode;
+    console.log('New Wallet generated', walletData);
+    Settings.instance.updateSettings({
+      extendedSettings: { wallet: this.walletSettings },
+    });
+    this.loaded = true;
+  }
+
   private async loadAddress() {
-    // TODO
-    //  load address from storage
-    this.address = 'test address';
-    this.walletHistory = new WalletHistory(this.address);
+    if (this.address === '') {
+      await this.onAddressLoad();
+    }
+    return this.address;
+  }
+
+  public async loadAccountHash() {
+    if (!this.loaded) return;
+    const { data } = await apiRequest(WALLET_API, 'HASH', {
+      headers: this.headers,
+    });
+    const resData = data.data as Record<string, string>;
+    console.log('load account hash', resData);
+    this.hash = resData.hash;
   }
 
   public async getAccountFunds() {
@@ -52,6 +119,13 @@ export class WalletService extends EventEmitter {
     //  query wallet address's balance via light client
     this.funds = fixed(500);
     invokeEvent('wallet-update-funds', this.funds);
+  }
+
+  public async getHash() {
+    await this.loadAddress();
+    if (this.hash !== '') return this.hash;
+    await this.loadAccountHash();
+    return this.hash;
   }
 
   public requestSendFunds(
@@ -128,6 +202,33 @@ export class WalletService extends EventEmitter {
         address: this.address,
       };
     });
+
+    ipcMain.handle(`wallet-get-confirmation-hash`, async () => {
+      const hash = await this.getHash();
+      return { hash };
+    });
+  }
+
+  private onAddressLoad = async (): Promise<void> => {
+    return new Promise((resolve) => {
+      if (this.address === '') {
+        this.once('load', () => {
+          resolve();
+        });
+      } else {
+        resolve();
+      }
+    });
+  };
+
+  get walletKey() {
+    return `${this.walletSettings.walletId}-${this.walletSettings.passcode}`;
+  }
+
+  get headers() {
+    return {
+      'wallet-token': this.walletKey,
+    };
   }
 }
 

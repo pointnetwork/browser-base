@@ -20,7 +20,7 @@ export class Application {
 
   public sessions: SessionsService;
 
-  public settings = new Settings();
+  public settings = Settings.instance;
 
   public storage = new StorageService();
 
