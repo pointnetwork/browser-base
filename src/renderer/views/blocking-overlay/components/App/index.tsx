@@ -10,8 +10,8 @@ export default observer(() => {
   const ref = React.useRef() as React.MutableRefObject<HTMLInputElement>;
 
   React.useEffect(() => {
-    if (!ref.current || store.screenDims.width === 0) return;
-    console.log(store.randomHash);
+    if (!ref.current || store.screenDims.width === 0 || store.randomHash === '')
+      return;
     const canvas = createOverlayCanvas(
       store.randomHash,
       store.screenDims.height,

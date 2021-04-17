@@ -7,9 +7,10 @@ import { Wrapper } from './style';
 import { WebUIStyle } from '~/renderer/mixins/default-styles';
 import { ipcRenderer } from 'electron';
 import { fixed } from '~/utils/Big';
+import Txs from '../Txs';
+import { formatNumber } from '~/utils/format';
 
 const testClickHandler = () => {
-  console.log('testClickHandle');
   ipcRenderer.invoke(
     'wallet-send-funds',
     {
@@ -34,10 +35,11 @@ export default observer(() => {
         <Wrapper fullSize={true}>
           <h1>Point Wallet</h1>
           <div>
-            <p>Funds: {fixed(store.funds, 1)}</p>
+            <p>Funds: {formatNumber(fixed(store.funds, 0))}</p>
             <p>address: {store.address}</p>
             <button onClick={testClickHandler}>Test send 10 POINT</button>
           </div>
+          <Txs />
         </Wrapper>
       </div>
     </ThemeProvider>

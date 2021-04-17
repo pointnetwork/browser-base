@@ -5,12 +5,18 @@ import { ipcRenderer } from 'electron';
 
 export class Store {
   public settings: ISettings = { ...(window as any).settings };
-  public funds: string = '';
-  public address: string = '';
+  public funds = '';
+  public address = '';
+  public txHashArr: string[] = [];
 
   @computed
   public get theme(): ITheme {
     return getTheme(this.settings.theme);
+  }
+
+  @computed
+  public get txArr() {
+    return this.txHashArr;
   }
 
   public constructor() {
@@ -18,6 +24,7 @@ export class Store {
       funds: observable,
       settings: observable,
       address: observable,
+      txHashArr: observable,
     });
 
     (window as any).updateSettings = (settings: ISettings) => {
@@ -28,13 +35,20 @@ export class Store {
   }
 
   private async init() {
-    const { funds, address } = await ipcRenderer.invoke('wallet-get-data');
+    const { funds, address, txHashArr } = await ipcRenderer.invoke(
+      'wallet-get-data',
+    );
     this.funds = funds;
     this.address = address;
+    this.txHashArr = txHashArr;
   }
   private initListeners() {
     ipcRenderer.on('wallet-update-funds', (e, funds) => {
       this.funds = funds;
+    });
+    ipcRenderer.on('wallet-update-txHashArr', (e, hash) => {
+      console.log('txhashArr update', hash);
+      this.txHashArr.push(hash);
     });
   }
 }

@@ -22,12 +22,15 @@ import {
 import axios from 'axios';
 import { apiRequest } from '~/utils/api';
 
+const testAddress = '0xC01011611e3501C6b3F6dC4B6d3FE644d21aB301';
+
 export class WalletService extends EventEmitter {
   public address = '';
   public hash = '';
   public funds = '0';
   public requestQueue: number[] = [];
   public walletSettings: IWalletSettings;
+  public txHashArr: string[] = [];
 
   public walletHistory: WalletHistory;
   private loaded = false;
@@ -115,10 +118,15 @@ export class WalletService extends EventEmitter {
 
   public async getAccountFunds() {
     await this.loadAddress();
-    // TODO
-    //  query wallet address's balance via light client
-    this.funds = fixed(500);
-    invokeEvent('wallet-update-funds', this.funds);
+    const { data } = await apiRequest(WALLET_API, 'BALANCE', {
+      headers: this.headers,
+    });
+    if (data.status === 200) {
+      const fundsData = data.data as Record<string, string>;
+      console.log('got funds', fundsData);
+      this.funds = fixed(fundsData.balance);
+      invokeEvent('wallet-update-funds', this.funds);
+    }
   }
 
   public async getHash() {
@@ -149,13 +157,30 @@ export class WalletService extends EventEmitter {
     return true;
   }
 
-  public sendFunds() {
-    console.log('confirmed send funds');
-    if (this.requestQueue.length === 0) return;
+  public pushTx(hash: string) {
+    this.txHashArr.push(hash);
+    invokeEvent('wallet-update-txHashArr', hash);
+  }
 
+  public async sendFunds() {
+    if (this.requestQueue.length === 0) return;
     const amount = this.requestQueue.shift();
-    this.funds = minus(this.funds, amount);
-    invokeEvent('wallet-update-funds', this.funds);
+
+    const { data } = await apiRequest(WALLET_API, 'REQUEST_TX', {
+      headers: this.headers,
+      body: {
+        to: testAddress,
+        value: `${amount}`,
+      },
+    });
+    if (data.status === 200) {
+      const resData = data.data as Record<string, string>;
+      this.pushTx(resData.transactionHash);
+    } else {
+      alert(`tx send fail - ${JSON.stringify(data)}`);
+    }
+
+    this.getAccountFunds();
   }
 
   private applyIpcHandlers() {
@@ -200,6 +225,7 @@ export class WalletService extends EventEmitter {
       return {
         funds: this.funds,
         address: this.address,
+        txHashArr: this.txHashArr,
       };
     });
 

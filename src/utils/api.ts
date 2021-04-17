@@ -14,7 +14,7 @@ export const apiRequest = async (
     return await axios.post(
       `${apiObj.BASE}${targetRoute.route}`,
       settings?.body,
-      settings?.headers,
+      { headers: settings?.headers },
     );
   }
 };

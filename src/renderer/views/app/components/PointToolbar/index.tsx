@@ -15,6 +15,7 @@ import { ToolbarButton } from '~/renderer/views/app/components/ToolbarButton';
 import { ipcRenderer } from 'electron';
 import { getWebUIURL } from '~/common/webui';
 import { fixed } from '~/utils/Big';
+import { formatNumber } from '~/utils/format';
 
 const setTabUrl = (url: string) => {
   ipcRenderer.send(`set-tab-${store.windowId}`, {
@@ -41,7 +42,7 @@ export const PointToolbar = observer(() => {
     <StyledToolbarWrapper>
       <StyledToolbar>
         <PointAmount>
-          <h2>{fixed(store.funds, 1)}</h2>
+          <h2>{formatNumber(fixed(store.funds, 0))}</h2>
           <p>POINT</p>
         </PointAmount>
         <ToolbarButton
