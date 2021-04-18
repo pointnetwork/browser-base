@@ -1,14 +1,7 @@
 import { EventEmitter } from 'events';
 import Socket, { Options } from 'reconnecting-websocket';
-
-const SOCKET = {
-  WAIT: {
-    RECONNECT: 500,
-  },
-  LIMITS: {
-    RECONNECT: 10,
-  },
-};
+import { SOCKET_DEFAULT_OPTIONS } from '~/main/fork/point/constants/api';
+import { ISocketObj, ISocketSub } from '~/main/fork/point/interfaces/sockets';
 
 export const SOCKET_MESSAGES = {
   STATUS: 'socket_status',
@@ -21,39 +14,16 @@ export const CLIENT_MESSAGES = {
   MESSAGE: 'message',
 };
 
-interface socketObj {
-  type: string;
-  status?: string;
-  data?: unknown[];
-}
-
-interface socketSub {
-  evName: string;
-  callback: (...args: unknown[]) => void;
-}
-
-const defaultOptions = Object.freeze({
-  maxReconnectionDelay: 5000,
-  minReconnectionDelay: 2000,
-  reconnectionDelayGrowFactor: 1.3,
-  minUptime: 5000,
-  connectionTimeout: 4000,
-  maxRetries: Infinity,
-  maxEnqueuedMessages: Infinity,
-  startClosed: false,
-  debug: false,
-});
-
-export class SocketClient extends EventEmitter {
+export class ConsoleSocketClient extends EventEmitter {
   public socket: Socket;
-  public socketSubs: socketSub[];
+  public socketSubs: ISocketSub[];
 
   private reconnectAttempt = 0;
   public constructor(socketUrl: string, options?: Options) {
     super();
     // if (socketUrl === '') this.socket = new EventEmitter();
     this.socket = new Socket(socketUrl, [], {
-      ...defaultOptions,
+      ...SOCKET_DEFAULT_OPTIONS,
       ...options,
     });
 
@@ -102,7 +72,7 @@ export class SocketClient extends EventEmitter {
     }
   }
 
-  private onMessage(data: socketObj) {
+  private onMessage(data: ISocketObj) {
     switch (data.type) {
       case SOCKET_MESSAGES.STATUS: {
         this.emit(CLIENT_MESSAGES.STATUS, data);

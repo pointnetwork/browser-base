@@ -10,17 +10,16 @@ import {
 import { ITxReceive, ITxSend } from '~/interfaces/tx';
 import { add, fixed, gt, minus } from '~/utils/Big';
 import { WalletHistory } from '~/main/fork/point/wallet/wallet-history';
-import { WindowsService } from '~/main/windows-service';
 import { Application } from '~/main/application';
 import { invokeEvent } from '~/utils/scripts';
-import { WALLET_API } from '~/constants/api';
+import { WALLET_API } from '~/main/fork/point/constants/api';
 import { Settings } from '~/main/models/settings';
 import {
   IPointSettings,
   IWalletSettings,
 } from '~/main/fork/point/interfaces/settings';
-import axios from 'axios';
 import { apiRequest } from '~/utils/api';
+import { showSimpleNotification } from '~/utils/notifications';
 
 const testAddress = '0xC01011611e3501C6b3F6dC4B6d3FE644d21aB301';
 
@@ -50,6 +49,7 @@ export class WalletService extends EventEmitter {
       this.funds = add(this.funds, obj.amount);
     });
     this.applyIpcHandlers();
+    this.applyEventHandlers();
   }
 
   public loadSettings() {
@@ -63,15 +63,34 @@ export class WalletService extends EventEmitter {
         this.initWallet().then(() => {
           this.loadPublicAddress();
           this.loadAccountHash();
+          this.loadWalletSocket();
         });
       } else {
         //  wallet is loaded
-        console.log('wallet was loaded');
+        console.log('wallet was loaded ');
         this.loaded = true;
+        //  check whether wallet exists in node
         this.loadPublicAddress();
-        this.loadAccountHash();
+        this.once('load', () => {
+          this.loadAccountHash();
+          this.loadWalletSocket();
+        });
       }
     });
+  }
+
+  public async loadWalletSocket() {
+    console.log('request wallet socket >>>>>');
+    const res = await apiRequest(WALLET_API, 'GET_SOCKET', {
+      headers: this.headers,
+    });
+    console.log('wallet Socket >>>>>', res);
+    if (res.data?.status === 200) {
+      const resData = res.data.data as Record<string, string>;
+      console.log('wallet socket ', resData);
+      // this.address = resData?.publicKey;
+      // this.emit('load');
+    }
   }
 
   public async loadPublicAddress(): Promise<void> {
@@ -80,10 +99,18 @@ export class WalletService extends EventEmitter {
     const { data } = await apiRequest(WALLET_API, 'PUBLIC_KEY', {
       headers: this.headers,
     });
+    console.log('public address res >>', data);
     if (data?.status === 200) {
       const resData = data.data as Record<string, string>;
       this.address = resData?.publicKey;
       this.emit('load');
+    } else {
+      //  wallet does not exist on node, reinit wallet
+      // TODO : need to save original wallet data somewhere before overwriting
+      console.log('wallet not found - Creating a new wallet');
+      showSimpleNotification('Wallet not found', 'Created a new Wallet');
+      await this.initWallet();
+      await this.loadPublicAddress();
     }
   }
 
@@ -181,6 +208,12 @@ export class WalletService extends EventEmitter {
     }
 
     this.getAccountFunds();
+  }
+
+  private applyEventHandlers() {
+    this.on('load', () => {
+      invokeEvent('wallet-update-address', this.address);
+    });
   }
 
   private applyIpcHandlers() {

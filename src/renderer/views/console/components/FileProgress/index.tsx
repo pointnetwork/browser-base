@@ -8,12 +8,17 @@ import * as moment from 'dayjs';
 import { IFileProgress } from '~/renderer/views/console/store/data';
 
 const FileProgress = observer(() => {
+  const ref = React.useRef() as React.MutableRefObject<HTMLInputElement>;
   const item =
     store.progressQueue.length > 0
       ? store.progressQueue[store.progressQueue.length - 1]
       : null;
+
+  React.useEffect(() => {
+    ref.current.scrollTop = ref.current.scrollHeight;
+  }, [store.progressQueue.length]);
   return (
-    <FileProgressContainer>
+    <FileProgressContainer ref={ref}>
       <ul>
         {item && (
           <LogItem>

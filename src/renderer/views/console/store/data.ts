@@ -3,8 +3,8 @@ import { ipcRenderer } from 'electron';
 import {
   CLIENT_MESSAGES,
   SOCKET_MESSAGES,
-  SocketClient,
-} from '~/renderer/classes/SocketClient';
+  ConsoleSocketClient,
+} from '~/renderer/classes/ConsoleSocketClient';
 
 export interface ILogItem {
   id: number; //  native counter
@@ -37,7 +37,9 @@ export class DataStore {
       this.push(content);
     });
     this.push('Logs Hooked');
-    const client = new SocketClient('ws://localhost:2469/ws/deploy/progress');
+    const client = new ConsoleSocketClient(
+      'ws://localhost:2469/ws/deploy/progress',
+    );
     client.on(CLIENT_MESSAGES.DEPLOYMENT_PROGRESS, (data: IProgressObject) => {
       console.log('progress - ', data);
       this.groupPush(data.data);
@@ -96,7 +98,7 @@ export class DataStore {
       'This is a multi-line log',
       'This is a multi-line log',
     ]);
-    const client = new SocketClient('');
+    const client = new ConsoleSocketClient('');
     client.on(CLIENT_MESSAGES.DEPLOYMENT_PROGRESS, (data) => {
       console.log('progress?', data);
       this.push(data.data);

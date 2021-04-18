@@ -15,10 +15,11 @@ import { IBrowserAction } from '../models';
 import { NEWTAB_URL } from '~/constants/tabs';
 import { IURLSegment } from '~/interfaces/urls';
 import { BookmarkBarStore } from './bookmark-bar';
+import { FORK_TYPES } from '~/constants/fork';
+import { WalletStore } from '~/renderer/views/app/store/wallet';
 
 export class Store {
-  public funds: string = '';
-
+  public forkStore: unknown;
   public settings = new SettingsStore(this);
   public addTab = new AddTabStore();
   public tabs = new TabsStore();
@@ -180,7 +181,6 @@ export class Store {
 
   public constructor() {
     makeObservable(this, {
-      funds: observable,
       addressbarTextVisible: observable,
       addressbarFocused: observable,
       addressbarEditing: observable,
@@ -330,19 +330,16 @@ export class Store {
               .filter((x) => x.extensionId === extensionId)
               .forEach(handler);
           }
+          ``;
         },
       );
       ipcRenderer.send('load-extensions');
     }
 
     // ipcRenderer.send('update-check');
-    this.walletInit();
-  }
-  private async walletInit() {
-    this.funds = await ipcRenderer.invoke('wallet-get-funds');
-    ipcRenderer.on('wallet-update-funds', (e, funds) => {
-      this.funds = funds;
-    });
+    if (process.env.FORK === FORK_TYPES.POINT) {
+      this.forkStore = new WalletStore();
+    }
   }
 }
 

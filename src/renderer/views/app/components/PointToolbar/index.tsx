@@ -16,6 +16,7 @@ import { ipcRenderer } from 'electron';
 import { getWebUIURL } from '~/common/webui';
 import { fixed } from '~/utils/Big';
 import { formatNumber } from '~/utils/format';
+import { WalletStore } from '~/renderer/views/app/store/wallet';
 
 const setTabUrl = (url: string) => {
   ipcRenderer.send(`set-tab-${store.windowId}`, {
@@ -38,12 +39,19 @@ const onNotificationClick = async (e: React.MouseEvent<HTMLDivElement>) => {
 };
 
 export const PointToolbar = observer(() => {
+  const wallet = store.forkStore as WalletStore;
   return (
     <StyledToolbarWrapper>
       <StyledToolbar>
         <PointAmount>
-          <h2>{formatNumber(fixed(store.funds, 0))}</h2>
-          <p>POINT</p>
+          {wallet.address === '' ? (
+            <p>-</p>
+          ) : (
+            <>
+              <h2>{formatNumber(fixed(wallet.funds, 0))}</h2>
+              <p>POINT</p>
+            </>
+          )}
         </PointAmount>
         <ToolbarButton
           onClick={goToWebUIPage('wallet')}

@@ -7,15 +7,23 @@ export const apiRequest = async (
 ): Promise<AxiosResponse<IResponseData>> => {
   const targetRoute = apiObj.ROUTES[route] as IRouteObject;
   if (targetRoute.type === 'get') {
-    return await axios.get(`${apiObj.BASE}${targetRoute.route}`, {
-      headers: settings?.headers,
-    });
+    try {
+      return await axios.get(`${apiObj.BASE}${targetRoute.route}`, {
+        headers: settings?.headers,
+      });
+    } catch (ex) {
+      return ex.response;
+    }
   } else {
-    return await axios.post(
-      `${apiObj.BASE}${targetRoute.route}`,
-      settings?.body,
-      { headers: settings?.headers },
-    );
+    try {
+      return await axios.post(
+        `${apiObj.BASE}${targetRoute.route}`,
+        settings?.body,
+        { headers: settings?.headers },
+      );
+    } catch (ex) {
+      return ex.response;
+    }
   }
 };
 

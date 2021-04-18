@@ -10,6 +10,9 @@ import { WEBUI_BASE_URL } from '~/constants/files';
 import { runAdblockService, stopAdblockService } from '~/main/services/adblock';
 import { PointClient } from '~/main/fork/point/PointClient';
 import { POINT_SETTINGS } from '~/main/fork/point/constants/settings';
+import { showBlockingOverlay } from '~/main/dialogs/blocking-overlay';
+import { ConfirmationDialog } from '~/main/dialogs/confirmation';
+import { AppWindow } from '~/main/windows';
 
 const SETTINGS_FILENAME = 'point-settings.json';
 export class PointSettings extends EventEmitter {
@@ -127,5 +130,39 @@ export class PointSettings extends EventEmitter {
     }
     this.object = { ...this.object, ...settings };
     this.addToQueue();
+  }
+
+  public applyMessaging(id: number, appWindow: AppWindow) {
+    ipcMain.on(`show-confirmation-dialog-${id}`, (e, hideIfOpen: boolean) => {
+      //  prevent multiple overlays by any chance
+      if (!Application.instance.dialogs.getDynamic(`blocking-overlay`)) {
+        // show blocking overlay for every window
+        Application.instance.windows.list.forEach((window) => {
+          console.log('show blocking overlay - ', window.win.id);
+          showBlockingOverlay(window.win, window.win.id);
+        });
+      }
+
+      const dialog = Application.instance.dialogs.getPersistent(
+        'confirmation',
+      ) as ConfirmationDialog;
+      if (dialog?.visible && hideIfOpen) return dialog.hide();
+      dialog.bounds = appWindow.win.getContentBounds();
+      dialog.show(appWindow.win);
+    });
+
+    ipcMain.on(`hide-confirmation-dialog-${id}`, (e, data) => {
+      //  remove blocking overlay for every window
+      Application.instance.dialogs.dialogs.forEach((dialog) => {
+        if (dialog.name.includes('blocking-overlay')) {
+          dialog.hide();
+        }
+      });
+
+      const dialog = Application.instance.dialogs.getPersistent(
+        'confirmation',
+      ) as ConfirmationDialog;
+      dialog.hide();
+    });
   }
 }

@@ -23,6 +23,7 @@ import { Confirmation } from '~/renderer/views/confirmation/store/Confirmation';
 import { IConfirmation } from '~/interfaces/confirmation';
 import { ConfirmationDialog } from '~/main/dialogs/confirmation';
 import { showBlockingOverlay } from '~/main/dialogs/blocking-overlay';
+import { forkActionHook } from '~/main/hook';
 
 export const runMessagingService = (appWindow: AppWindow) => {
   const { id } = appWindow;
@@ -111,38 +112,6 @@ export const runMessagingService = (appWindow: AppWindow) => {
     );
     if (notificationDialog) notificationDialog.hide();
     else showNotificationsDialog(appWindow.win, left, top);
-  });
-
-  ipcMain.on(`show-confirmation-dialog-${id}`, (e, hideIfOpen: boolean) => {
-    //  prevent multiple overlays by any chance
-    if (!Application.instance.dialogs.getDynamic(`blocking-overlay`)) {
-      // show blocking overlay for every window
-      Application.instance.windows.list.forEach((window) => {
-        console.log('show blocking overlay - ', window.win.id);
-        showBlockingOverlay(window.win, window.win.id);
-      });
-    }
-
-    const dialog = Application.instance.dialogs.getPersistent(
-      'confirmation',
-    ) as ConfirmationDialog;
-    if (dialog?.visible && hideIfOpen) return dialog.hide();
-    dialog.bounds = appWindow.win.getContentBounds();
-    dialog.show(appWindow.win);
-  });
-
-  ipcMain.on(`hide-confirmation-dialog-${id}`, (e, data) => {
-    //  remove blocking overlay for every window
-    Application.instance.dialogs.dialogs.forEach((dialog) => {
-      if (dialog.name.includes('blocking-overlay')) {
-        dialog.hide();
-      }
-    });
-
-    const dialog = Application.instance.dialogs.getPersistent(
-      'confirmation',
-    ) as ConfirmationDialog;
-    dialog.hide();
   });
 
   ipcMain.on(`show-zoom-dialog-${id}`, (e, left, top) => {
@@ -318,4 +287,8 @@ export const runMessagingService = (appWindow: AppWindow) => {
       bookmarkMenu.createMenu(appWindow, item).popup({ window: appWindow.win });
     },
   );
+
+  if (process.env.FORK) {
+    forkActionHook('messaging', 'load', id, appWindow);
+  }
 };
