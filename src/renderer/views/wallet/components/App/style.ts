@@ -13,7 +13,6 @@ export const Wrapper = styled.div`
   flex-flow: column;
   align-items: center;
   position: relative;
-  overflow: hidden;
 
   ${({ fullSize }: { fullSize: boolean }) => css`
     height: ${fullSize ? '100vh' : 'auto'};

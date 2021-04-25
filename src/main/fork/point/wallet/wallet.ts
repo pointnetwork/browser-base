@@ -12,7 +12,7 @@ import { add, fixed, gt, minus } from '~/utils/Big';
 import { WalletHistory } from '~/main/fork/point/wallet/wallet-history';
 import { Application } from '~/main/application';
 import { invokeEvent } from '~/utils/scripts';
-import { WALLET_API } from '~/main/fork/point/constants/api';
+import { WALLET_API, WALLET_WS } from '~/main/fork/point/constants/api';
 import { Settings } from '~/main/models/settings';
 import {
   IPointSettings,
@@ -20,6 +20,7 @@ import {
 } from '~/main/fork/point/interfaces/settings';
 import { apiRequest } from '~/utils/api';
 import { showSimpleNotification } from '~/utils/notifications';
+import { SocketClient } from '~/main/fork/point/classes/SocketClient';
 
 const testAddress = '0xC01011611e3501C6b3F6dC4B6d3FE644d21aB301';
 
@@ -29,18 +30,14 @@ export class WalletService extends EventEmitter {
   public funds = '0';
   public requestQueue: number[] = [];
   public walletSettings: IWalletSettings;
-  public txHashArr: string[] = [];
 
   public walletHistory: WalletHistory;
   private loaded = false;
+  private _walletSocket: SocketClient;
+  private _txArr: ITxData[] = [];
 
   public constructor() {
     super();
-
-    this.getAccountFunds();
-    // TODO
-    //  add listener that listens to the connected light client
-    //  and updates funds and emits an event
 
     this.on(IWalletEvents.RECEIVED_FUNDS, (_, obj: ITxReceive) => {
       // TODO
@@ -63,7 +60,6 @@ export class WalletService extends EventEmitter {
         this.initWallet().then(() => {
           this.loadPublicAddress();
           this.loadAccountHash();
-          this.loadWalletSocket();
         });
       } else {
         //  wallet is loaded
@@ -73,24 +69,9 @@ export class WalletService extends EventEmitter {
         this.loadPublicAddress();
         this.once('load', () => {
           this.loadAccountHash();
-          this.loadWalletSocket();
         });
       }
     });
-  }
-
-  public async loadWalletSocket() {
-    console.log('request wallet socket >>>>>');
-    const res = await apiRequest(WALLET_API, 'GET_SOCKET', {
-      headers: this.headers,
-    });
-    console.log('wallet Socket >>>>>', res);
-    if (res.data?.status === 200) {
-      const resData = res.data.data as Record<string, string>;
-      console.log('wallet socket ', resData);
-      // this.address = resData?.publicKey;
-      // this.emit('load');
-    }
   }
 
   public async loadPublicAddress(): Promise<void> {
@@ -103,6 +84,8 @@ export class WalletService extends EventEmitter {
     if (data?.status === 200) {
       const resData = data.data as Record<string, string>;
       this.address = resData?.publicKey;
+      this.initWalletSocketClient();
+      this.getAccountFunds();
       this.emit('load');
     } else {
       //  wallet does not exist on node, reinit wallet
@@ -153,6 +136,9 @@ export class WalletService extends EventEmitter {
       console.log('got funds', fundsData);
       this.funds = fixed(fundsData.balance);
       invokeEvent('wallet-update-funds', this.funds);
+      showSimpleNotification('Funds', 'Were loaded');
+    } else {
+      showSimpleNotification('Funds', 'failed loading');
     }
   }
 
@@ -184,10 +170,10 @@ export class WalletService extends EventEmitter {
     return true;
   }
 
-  public pushTx(hash: string) {
-    this.txHashArr.push(hash);
-    invokeEvent('wallet-update-txHashArr', hash);
-  }
+  // public pushTx(hash: string) {
+  //   this.txHashArr.push(hash);
+  //   invokeEvent('wallet-update-txHashArr', hash);
+  // }
 
   public async sendFunds() {
     if (this.requestQueue.length === 0) return;
@@ -201,13 +187,29 @@ export class WalletService extends EventEmitter {
       },
     });
     if (data.status === 200) {
-      const resData = data.data as Record<string, string>;
-      this.pushTx(resData.transactionHash);
+      // processed by socket
+      // const resData = data.data as Record<string, string>;
+      // this.pushTx(resData.transactionHash);
     } else {
       alert(`tx send fail - ${JSON.stringify(data)}`);
     }
 
     this.getAccountFunds();
+  }
+
+  private initWalletSocketClient() {
+    this._walletSocket = new SocketClient(WALLET_WS.BASE);
+    this._walletSocket.addSocketCb((data: ISocketData) => {
+      // console.log('socket callback', data);
+      if (data?.data) {
+        if (typeof data?.data?.status === 'object') {
+          console.log('socket status >>>', data.data.status);
+          return;
+        }
+        this._txArr.push(data?.data);
+        invokeEvent('wallet-update-txArr', data?.data);
+      }
+    });
   }
 
   private applyEventHandlers() {
@@ -258,7 +260,7 @@ export class WalletService extends EventEmitter {
       return {
         funds: this.funds,
         address: this.address,
-        txHashArr: this.txHashArr,
+        txArr: this._txArr,
       };
     });
 
@@ -289,6 +291,17 @@ export class WalletService extends EventEmitter {
       'wallet-token': this.walletKey,
     };
   }
+}
+
+interface ISocketData {
+  data: ITxData;
+}
+
+export interface ITxData {
+  transactionHash: string;
+  from: string;
+  to: string;
+  value: string;
 }
 
 export const createWalletError = (

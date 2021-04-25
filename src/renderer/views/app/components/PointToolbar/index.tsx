@@ -4,11 +4,11 @@ import { StyledToolbar, StyledToolbarWrapper, PointAmount } from './style';
 import {
   ICON_DRIVE,
   ICON_MESSAGING,
-  ICON_SOCIAL,
   ICON_WALLET,
   ICON_NOTIFICATION,
   ICON_CONFIRMATION,
   ICON_TERMINAL,
+  ICON_EMAIL,
 } from '~/renderer/constants';
 import store from '~/renderer/views/app/store';
 import { ToolbarButton } from '~/renderer/views/app/components/ToolbarButton';
@@ -68,9 +68,10 @@ export const PointToolbar = observer(() => {
           style={{ marginLeft: 6 }}
         />
         <ToolbarButton
-          disabled={true}
+          onClick={goToWebUIPage('email')}
+          disabled={false}
           size={16}
-          icon={ICON_SOCIAL}
+          icon={ICON_EMAIL}
           style={{ marginLeft: 6 }}
         />
         <ToolbarButton

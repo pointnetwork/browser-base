@@ -63,6 +63,7 @@ applyEntries(appConfig, [
   'confirmation',
   'blocking-overlay',
   'console',
+  'email',
 ]);
 
 if (process.env.ENABLE_EXTENSIONS) {

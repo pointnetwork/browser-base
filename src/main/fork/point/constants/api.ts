@@ -23,10 +23,6 @@ export const WALLET_API: IApiObject = {
       type: 'post',
       route: '/api/wallet/tx',
     },
-    GET_SOCKET: {
-      type: 'get',
-      route: '/ws/wallet/connect',
-    },
     PING: {
       type: 'get',
       route: '/api/ping',
@@ -35,7 +31,7 @@ export const WALLET_API: IApiObject = {
 };
 
 export const WALLET_WS = {
-  BASE: 'http://localhost:2468/ws/wallet/connect',
+  BASE: 'ws://localhost:2468/ws/wallet/connect',
 };
 
 export const SOCKET_DEFAULT_OPTIONS = Object.freeze({
