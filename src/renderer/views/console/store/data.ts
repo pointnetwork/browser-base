@@ -38,7 +38,7 @@ export class DataStore {
     });
     this.push('Logs Hooked');
     const client = new ConsoleSocketClient(
-      'ws://localhost:2469/ws/deploy/progress',
+      `ws://localhost:${process.env.CONSOLE_SOCKET_PORT}/ws/deploy/progress`,
     );
     client.on(CLIENT_MESSAGES.DEPLOYMENT_PROGRESS, (data: IProgressObject) => {
       console.log('progress - ', data);

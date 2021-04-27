@@ -1,7 +1,7 @@
 import { IApiObject } from '~/utils/api';
 
 export const WALLET_API: IApiObject = {
-  BASE: 'http://localhost:2468',
+  BASE: `http://localhost:${process.env.WALLET_SOCKET_PORT}`,
   ROUTES: {
     GENERATE: {
       type: 'get',
