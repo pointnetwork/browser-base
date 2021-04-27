@@ -31,7 +31,7 @@ export const WALLET_API: IApiObject = {
 };
 
 export const WALLET_WS = {
-  BASE: 'ws://localhost:2468/ws/wallet/connect',
+  BASE: `ws://localhost:${process.env.WALLET_SOCKET_PORT}/ws/wallet/connect`,
 };
 
 export const SOCKET_DEFAULT_OPTIONS = Object.freeze({
