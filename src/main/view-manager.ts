@@ -13,6 +13,7 @@ import { extensions } from 'electron-extensions';
 import { EventEmitter } from 'events';
 import { Application } from './application';
 import { ConfirmationDialog } from '~/main/dialogs/confirmation';
+import { getWebUIURL } from '~/common/webui';
 
 export class ViewManager extends EventEmitter {
   public views = new Map<number, View>();
@@ -50,9 +51,20 @@ export class ViewManager extends EventEmitter {
 
     ipcMain.on(`set-tab-${id}`, (e, details) => {
       const view = this.views.get(this.selectedId);
+
+      // email exception
+      if (details.url === getWebUIURL('email')) {
+        if (details.url !== view.url) {
+          view.webContents.loadURL('http://email.z');
+        } else {
+          view.webContents.loadURL('http://email.z');
+          view.webContents.reload();
+        }
+        return;
+      }
+
       if (details.url !== view.url) {
         view.webContents.loadURL(details.url);
-        view.webContents.openDevTools({ mode: 'detach' });
       } else {
         view.webContents.reload();
       }

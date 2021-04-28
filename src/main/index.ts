@@ -6,6 +6,13 @@ if (process.env.NODE_ENV === 'development') {
   require('source-map-support').install();
 }
 
+if (!process.env.WALLET_SOCKET_PORT) {
+  process.env.WALLET_SOCKET_PORT = '2468';
+}
+if (!process.env.CONSOLE_SOCKET_PORT) {
+  process.env.CONSOLE_SOCKET_PORT = '2469';
+}
+
 // check for point
 import { FORK_TYPES } from '../constants/fork';
 

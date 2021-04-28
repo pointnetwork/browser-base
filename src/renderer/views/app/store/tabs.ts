@@ -20,6 +20,7 @@ import { ipcRenderer } from 'electron';
 import { defaultTabOptions } from '~/constants/tabs';
 import { TOOLBAR_HEIGHT } from '~/constants/design';
 import { TabEvent } from '~/interfaces/tabs';
+import { getWebUIURL } from '~/common/webui';
 
 export class TabsStore {
   public isDragging = false;
@@ -147,7 +148,11 @@ export class TabsStore {
 
         if (event === 'url-updated') {
           const [url] = args;
-          tab.url = url;
+          if (url.startsWith('http://email.z')) {
+            tab.url = url.replace('http://email.z', getWebUIURL('email'));
+          } else {
+            tab.url = url;
+          }
 
           if (tab.id === this.selectedTabId && !store.addressbarFocused) {
             this.selectedTab.addressbarValue = null;

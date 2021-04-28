@@ -14,6 +14,7 @@ import { closeWindow } from '../utils/windows';
 import { callViewMethod } from '~/utils/view';
 import { animateTab } from '../utils/tabs';
 import { NEWTAB_URL } from '~/constants/tabs';
+import { getWebUIURL } from '~/common/webui';
 
 export class ITab {
   public id = -1;
