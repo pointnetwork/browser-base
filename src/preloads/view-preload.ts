@@ -8,6 +8,9 @@ import { injectChromeWebstoreInstallButton } from './chrome-webstore';
 // ipcRenderer methods to allow
 contextBridge.exposeInMainWorld('electronApi', {
   //  TODO : below method is unsafe - fix to enable per channel type
+  processEnv: (key: string) => {
+    return process.env[key];
+  },
   send: (channel, data) => {
     ipcRenderer.send(channel, data);
   },

@@ -1,4 +1,4 @@
-import { WalletService } from '~/main/fork/point/wallet/wallet';
+import { WalletService } from '~/main/fork/point/services/wallet/wallet';
 import { PointSettings } from './settings/PointSettings';
 import { ForkClient } from '../interfaces/client';
 import { app, ipcMain, session } from 'electron';
@@ -6,11 +6,13 @@ import { apiRequest } from '~/utils/api';
 import { WALLET_API } from '~/main/fork/point/constants/api';
 import { timeout } from '~/utils/utils';
 import { showSimpleNotification } from '~/utils/notifications';
+import { PointEmailClient } from '~/main/fork/point/services/email/email';
 
 export class PointClient extends ForkClient {
   static instance = new PointClient();
 
   public wallet: WalletService;
+  // public emailClient: PointEmailClient;
   public settings = PointSettings.instance; //  instance created so that settings are loaded before the settings are actually required
 
   public constructor() {
@@ -21,6 +23,7 @@ export class PointClient extends ForkClient {
     });
     this.onReady();
     this.heartbeatMonitor();
+    // this.emailClient = new PointEmailClient();
   }
 
   public async onReady() {

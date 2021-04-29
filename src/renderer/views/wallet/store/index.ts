@@ -2,7 +2,7 @@ import { observable, computed, makeObservable } from 'mobx';
 import { ISettings, ITheme } from '~/interfaces';
 import { getTheme } from '~/utils/themes';
 import { ipcRenderer } from 'electron';
-import { ITxData } from '~/main/fork/point/wallet/wallet';
+import { ITxData } from '~/main/fork/point/services/wallet/wallet';
 
 export class Store {
   public settings: ISettings = { ...(window as any).settings };

@@ -38,7 +38,9 @@ export class DataStore {
     });
     this.push('Logs Hooked');
     const client = new ConsoleSocketClient(
-      `ws://localhost:${process.env.CONSOLE_SOCKET_PORT}/ws/deploy/progress`,
+      `ws://localhost:${window.electronApi.processEnv(
+        'CONSOLE_SOCKET_PORT',
+      )}/ws/deploy/progress`,
     );
     client.on(CLIENT_MESSAGES.DEPLOYMENT_PROGRESS, (data: IProgressObject) => {
       console.log('progress - ', data);

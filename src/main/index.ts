@@ -13,6 +13,10 @@ if (!process.env.CONSOLE_SOCKET_PORT) {
   process.env.CONSOLE_SOCKET_PORT = '2469';
 }
 
+if (!process.env.EMAIL_SOCKET_PORT) {
+  process.env.EMAIL_SOCKET_PORT = '7545';
+}
+
 // check for point
 import { FORK_TYPES } from '../constants/fork';
 

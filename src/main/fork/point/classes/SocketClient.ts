@@ -6,7 +6,7 @@ import { CLIENT_MESSAGES } from '~/renderer/classes/ConsoleSocketClient';
 const WS = require('ws');
 
 export class SocketClient extends EventEmitter {
-  public socket: WS;
+  public socket = WS;
   public socketCbs: ISocketCallback[] = [];
 
   private reconnectAttempt = 0;
@@ -26,14 +26,16 @@ export class SocketClient extends EventEmitter {
     this.socket = new WS(socketUrl);
 
     this.socket.on('open', () => {
-      console.log('[SOCKET] socket connected');
+      console.log(`[SOCKET] socket connected - ${socketUrl}`);
       this.reconnectAttempt = 0;
       this.socket.send('status');
     });
 
     this.socket.on('close', () => {
       setTimeout(() => {
-        console.log('[SOCKET] closed - reconnecting in 1 second...');
+        console.log(
+          `[SOCKET] closed - reconnecting in 1 second... [${socketUrl}]`,
+        );
         this.reconnectAttempt++;
         this.connectSockets(socketUrl);
       }, 1000);

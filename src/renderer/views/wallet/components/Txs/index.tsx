@@ -4,7 +4,7 @@ import { toJS } from 'mobx';
 
 import store from '../../store';
 import { TxList, Wrapper } from './style';
-import { ITxData } from '~/main/fork/point/wallet/wallet';
+import { ITxData } from '~/main/fork/point/services/wallet/wallet';
 
 export default observer(() => {
   console.log(toJS(store.txArr));

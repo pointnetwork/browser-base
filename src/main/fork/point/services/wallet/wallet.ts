@@ -9,7 +9,7 @@ import {
 } from '~/interfaces/wallet';
 import { ITxReceive, ITxSend } from '~/interfaces/tx';
 import { add, fixed, gt, minus } from '~/utils/Big';
-import { WalletHistory } from '~/main/fork/point/wallet/wallet-history';
+import { WalletHistory } from '~/main/fork/point/services/wallet/wallet-history';
 import { Application } from '~/main/application';
 import { invokeEvent } from '~/utils/scripts';
 import { WALLET_API, WALLET_WS } from '~/main/fork/point/constants/api';
@@ -128,17 +128,19 @@ export class WalletService extends EventEmitter {
 
   public async getAccountFunds() {
     await this.loadAddress();
+    console.log('request funds');
     const { data } = await apiRequest(WALLET_API, 'BALANCE', {
       headers: this.headers,
     });
+    console.log('key', this.walletKey);
+    console.log('request funds result', data);
     if (data.status === 200) {
       const fundsData = data.data as Record<string, string>;
       console.log('got funds', fundsData);
       this.funds = fixed(fundsData.balance);
       invokeEvent('wallet-update-funds', this.funds);
-      showSimpleNotification('Funds', 'Were loaded');
     } else {
-      showSimpleNotification('Funds', 'failed loading');
+      showSimpleNotification('Funds', 'failed loading', null, false);
     }
   }
 
