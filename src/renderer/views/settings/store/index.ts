@@ -108,6 +108,16 @@ export class Store {
       '*',
     );
   }
+
+  public updateWindowProxy(newProxy: string) {
+    window.postMessage(
+      {
+        type: 'update-window-proxy',
+        data: newProxy,
+      },
+      '*',
+    );
+  }
 }
 
 export default new Store();

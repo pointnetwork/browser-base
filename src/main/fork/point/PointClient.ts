@@ -7,6 +7,9 @@ import { WALLET_API } from '~/main/fork/point/constants/api';
 import { timeout } from '~/utils/utils';
 import { showSimpleNotification } from '~/utils/notifications';
 import { PointEmailClient } from '~/main/fork/point/services/email/email';
+import { WindowsService } from '~/main/windows-service';
+import { runPointMessagingService } from '~/main/fork/point/services/messaging';
+import { AppWindow } from '~/main/windows';
 
 export class PointClient extends ForkClient {
   static instance = new PointClient();
@@ -24,6 +27,7 @@ export class PointClient extends ForkClient {
     this.onReady();
     this.heartbeatMonitor();
     // this.emailClient = new PointEmailClient();
+    runPointMessagingService();
   }
 
   public async onReady() {
@@ -35,28 +39,63 @@ export class PointClient extends ForkClient {
     });
   }
 
+  public applyWindowProxies(newProxy: string, windowId: number) {
+    const window = WindowsService.instance.findBrowserWindowById(windowId);
+    console.log('windowID >>>', windowId);
+    window.proxy = newProxy;
+    window.viewManager.views.forEach((view) => {
+      this.applySessionProxy(newProxy, view.webContents.session);
+    });
+  }
+
+  public applySessionProxy(newProxyRules: string, ses: session) {
+    const settings = this.settings.object;
+    const proxyRules = newProxyRules;
+    const proxyBypassRules = settings.proxyBypassRules;
+
+    ses.setProxy({ proxyRules, proxyBypassRules }).then(() => {
+      console.log(`proxy applied for session`, {
+        proxyRules,
+        proxyBypassRules,
+      });
+    });
+    ses.forceReloadProxyConfig().then(() => {
+      console.log('force reload proxy config');
+    });
+  }
+
   public setProxies(newProxyRules: string | void) {
     const settings = this.settings.object;
     const proxyRules = newProxyRules ? newProxyRules : settings.proxyRules;
-    const proxyBypassRules = settings.proxyBypassRules;
-    session
-      .fromPartition('persist:view')
-      .setProxy({ proxyRules, proxyBypassRules })
-      .then(() => {
-        console.log('proxy applied - webviewsession', {
-          proxyRules,
-          proxyBypassRules,
-        });
-      });
-    session
-      .fromPartition('view_incognito')
-      .setProxy({ proxyRules, proxyBypassRules })
-      .then(() => {
-        console.log('proxy applied - incognito', {
-          proxyRules,
-          proxyBypassRules,
-        });
-      });
+
+    AppWindow.globalProxy = proxyRules;
+    WindowsService.instance.list.forEach((window) =>
+      this.applyWindowProxies(proxyRules, window.id),
+    );
+
+    // session
+    //   .fromPartition('view')
+    //   .setProxy({ proxyRules, proxyBypassRules })
+    //   .then(() => {
+    //     console.log('proxy applied - webviewsession', {
+    //       proxyRules,
+    //       proxyBypassRules,
+    //     });
+    //   });
+    // session
+    //   .fromPartition('view_incognito')
+    //   .setProxy({ proxyRules, proxyBypassRules })
+    //   .then(() => {
+    //     console.log('proxy applied - incognito', {
+    //       proxyRules,
+    //       proxyBypassRules,
+    //     });
+    //   });
+    //
+    // session
+    //   .fromPartition('view')
+    //   .resolveProxy('http://mail.z')
+    //   .then((res) => console.log('fromPartition resolve', res));
   }
 
   //  quits app if point node is not connected

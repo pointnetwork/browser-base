@@ -21,10 +21,7 @@ const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     alert(`${contents} is not a valid url`);
     return;
   }
-  const pointSettings = store.settings.extendedSettings as IPointSettings;
-
-  pointSettings.proxyRules = contents;
-  store.save(true);
+  store.updateWindowProxy(contents);
 };
 
 const applyDefault = () => {
@@ -33,16 +30,42 @@ const applyDefault = () => {
   store.save(true);
 };
 
+const applyWindowProxy = (newProxy: string) => {
+  if (!isProxy(newProxy)) {
+    // TODO : change this to an alert made of html
+    alert(`${newProxy} is not a valid url`);
+    return;
+  }
+  store.updateWindowProxy(newProxy);
+};
+
 export const ProxySettings = observer(() => {
   const pointSettings = store.settings.extendedSettings as IPointSettings;
+
+  const [input, setInput] = React.useState('');
+
   return (
     <>
       <Header>Proxy Settings</Header>
       <Row style={{ justifyContent: 'space-between' }}>
         <Title>Apply new proxy settings</Title>
         <div style={{ minWidth: '200px', width: '200px', height: '25px' }}>
-          <Input placeholder={pointSettings.proxyRules} onKeyDown={onKeyDown} />
+          <Input
+            onChange={(e) => setInput(e.currentTarget.value)}
+            value={input}
+            placeholder={pointSettings.proxyRules}
+            onKeyDown={onKeyDown}
+          />
         </div>
+      </Row>
+      <Row style={{ justifyContent: 'flex-end' }}>
+        <Button
+          type="outlined"
+          foreground={BLUE_500}
+          onClick={() => applyWindowProxy(input)}
+        >
+          Apply Window Proxy
+        </Button>
       </Row>
       <Row style={{ justifyContent: 'flex-end' }}>
         <Button type="outlined" foreground={BLUE_500} onClick={applyDefault}>

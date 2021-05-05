@@ -14,6 +14,8 @@ import { EventEmitter } from 'events';
 import { Application } from './application';
 import { ConfirmationDialog } from '~/main/dialogs/confirmation';
 import { getWebUIURL } from '~/common/webui';
+import { FORK_TYPES } from '~/constants/fork';
+import { PointClient } from '~/main/fork/point/PointClient';
 
 export class ViewManager extends EventEmitter {
   public views = new Map<number, View>();
@@ -156,7 +158,7 @@ export class ViewManager extends EventEmitter {
     const view = new View(this.window, details.url, this.incognito);
 
     const { webContents } = view.browserView;
-    webContents.openDevTools({ mode: 'detach' });
+    // webContents.openDevTools({ mode: 'detach' });
     const { id } = view;
 
     this.views.set(id, view);
@@ -172,6 +174,14 @@ export class ViewManager extends EventEmitter {
     if (sendMessage) {
       this.window.send('create-tab', { ...details }, isNext, id);
     }
+
+    if (process.env.FORK === FORK_TYPES.POINT) {
+      if (this.window.proxy) {
+        const ses = view.webContents.session;
+        PointClient.instance.applySessionProxy(this.window.proxy, ses);
+      }
+    }
+
     return view;
   }
 

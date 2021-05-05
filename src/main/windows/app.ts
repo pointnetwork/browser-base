@@ -9,6 +9,9 @@ import { isNightly } from '..';
 import { ViewManager } from '../view-manager';
 
 export class AppWindow {
+  static globalProxy: string;
+  public proxy: string;
+
   public win: BrowserWindow;
 
   public viewManager: ViewManager;
@@ -16,6 +19,9 @@ export class AppWindow {
   public incognito: boolean;
 
   public constructor(incognito: boolean) {
+    if (AppWindow.globalProxy) {
+      this.proxy = AppWindow.globalProxy;
+    }
     this.win = new BrowserWindow({
       frame: false,
       minWidth: 400,

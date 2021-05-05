@@ -4,6 +4,7 @@ import AutoComplete from './models/auto-complete';
 import { getTheme } from '~/utils/themes';
 import { ERROR_PROTOCOL, WEBUI_BASE_URL } from '~/constants/files';
 import { injectChromeWebstoreInstallButton } from './chrome-webstore';
+import { FORK_TYPES } from '~/constants/fork';
 
 // ipcRenderer methods to allow
 contextBridge.exposeInMainWorld('electronApi', {
@@ -199,6 +200,14 @@ if (window.location.href.startsWith(WEBUI_BASE_URL)) {
       postMsg(data, res);
     } else if (data.type === 'save-settings') {
       ipcRenderer.send('save-settings', { settings: data.data });
+    }
+    if (process.env.FORK === FORK_TYPES.POINT) {
+      if (data.type === 'update-window-proxy') {
+        ipcRenderer.send('update-window-proxy', {
+          window: windowId,
+          data: data.data,
+        });
+      }
     }
   });
 

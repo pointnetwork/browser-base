@@ -79,4 +79,8 @@ export class WindowsService {
       appWindow.win.webContents.send(channel, ...args),
     );
   }
+
+  public getWindowSession(windowId: number): session {
+    return this.list.find((x) => x.id === windowId).win.webContents.session;
+  }
 }
