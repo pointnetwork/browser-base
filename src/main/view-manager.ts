@@ -177,8 +177,7 @@ export class ViewManager extends EventEmitter {
 
     if (process.env.FORK === FORK_TYPES.POINT) {
       if (this.window.proxy) {
-        const ses = view.webContents.session;
-        PointClient.instance.applySessionProxy(this.window.proxy, ses);
+        PointClient.instance.applyWindowProxy(this.window.proxy, this.window);
       }
     }
 

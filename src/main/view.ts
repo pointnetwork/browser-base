@@ -63,7 +63,7 @@ export class View {
         contextIsolation: true,
         sandbox: false,
         enableRemoteModule: false,
-        partition: incognito ? 'view_incognito' : 'persist:view',
+        partition: incognito ? 'view_incognito' : `persist:${window.windowId}`,
         plugins: true,
         nativeWindowOpen: true,
         webSecurity: true,

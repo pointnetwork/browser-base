@@ -38,30 +38,34 @@ export class PointClient extends ForkClient {
       this.setProxies();
     });
   }
+  // public applyWindowsProxy(newProxy: string, windowId: number) {
+  //   const window = WindowsService.instance.findBrowserWindowById(windowId);
+  //   const settings = this.settings.object;
+  //   const proxyBypassRules = settings.proxyBypassRules;
+  //   session
+  //     .fromPartition(`persist:${window.windowId}`)
+  //     .setProxy({ proxyRules: newProxy, proxyBypassRules })
+  //     .then(() => {
+  //       console.log(`proxy applied - persist:${window.windowId}`, {
+  //         proxyRules: newProxy,
+  //         proxyBypassRules,
+  //       });
+  //     });
+  // }
 
-  public applyWindowProxies(newProxy: string, windowId: number) {
-    const window = WindowsService.instance.findBrowserWindowById(windowId);
-    console.log('windowID >>>', windowId);
-    window.proxy = newProxy;
-    window.viewManager.views.forEach((view) => {
-      this.applySessionProxy(newProxy, view.webContents.session);
-    });
-  }
-
-  public applySessionProxy(newProxyRules: string, ses: session) {
+  public applyWindowProxy(newProxyRules: string, window: AppWindow) {
     const settings = this.settings.object;
-    const proxyRules = newProxyRules;
     const proxyBypassRules = settings.proxyBypassRules;
-
-    ses.setProxy({ proxyRules, proxyBypassRules }).then(() => {
-      console.log(`proxy applied for session`, {
-        proxyRules,
-        proxyBypassRules,
+    window.proxy = newProxyRules;
+    session
+      .fromPartition(`persist:${window.windowId}`)
+      .setProxy({ proxyRules: newProxyRules, proxyBypassRules })
+      .then(() => {
+        console.log(`proxy applied - persist:${window.windowId}`, {
+          proxyRules: newProxyRules,
+          proxyBypassRules,
+        });
       });
-    });
-    ses.forceReloadProxyConfig().then(() => {
-      console.log('force reload proxy config');
-    });
   }
 
   public setProxies(newProxyRules: string | void) {
@@ -70,7 +74,7 @@ export class PointClient extends ForkClient {
 
     AppWindow.globalProxy = proxyRules;
     WindowsService.instance.list.forEach((window) =>
-      this.applyWindowProxies(proxyRules, window.id),
+      this.applyWindowProxy(proxyRules, window),
     );
 
     // session

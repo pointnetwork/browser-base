@@ -10,11 +10,13 @@ import { ViewManager } from '../view-manager';
 
 export class AppWindow {
   static globalProxy: string;
+  static appIdCnt = 0;
   public proxy: string;
 
   public win: BrowserWindow;
 
   public viewManager: ViewManager;
+  public windowId = AppWindow.appIdCnt++;
 
   public incognito: boolean;
 
@@ -30,6 +32,7 @@ export class AppWindow {
       height: 700,
       titleBarStyle: 'hiddenInset',
       backgroundColor: '#ffffff',
+      partition: `persist:${this.windowId}`,
       webPreferences: {
         plugins: true,
         // TODO: enable sandbox, contextIsolation and disable nodeIntegration to improve security
