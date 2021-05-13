@@ -28,5 +28,35 @@ export const Wrapper = styled.div`
       max-width: 400px;
       word-break: break-word;
     }
+    > button {
+      padding: 5px;
+    }
+  }
+
+  .inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    > h6 {
+      margin-bottom: 10px;
+    }
+    > p {
+      font-size: 12px;
+      margin-top: 5px;
+      margin-bottom: 2px;
+    }
+    > input {
+      width: 350px;
+      font-size: 14px;
+    }
+    > textarea {
+      width: 350px;
+      font-size: 14px;
+    }
+    > button {
+      margin-left: auto;
+      margin-top: 10px;
+      padding: 5px;
+      width: 150px;
+    }
   }
 `;

@@ -12,7 +12,7 @@ export const showBlockingOverlay = (
     name: `blocking-overlay`,
     internalId: id,
     browserWindow,
-    devtools: true,
+    devtools: false,
     getBounds: () => {
       const winBounds = browserWindow.getContentBounds();
       return {

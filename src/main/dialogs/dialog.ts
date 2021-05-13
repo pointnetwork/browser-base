@@ -56,6 +56,10 @@ export class PersistentDialog {
       },
     });
 
+    if (devtools) {
+      this.browserView.webContents.openDevTools({ mode: 'detach' });
+    }
+
     this.bounds = { ...this.bounds, ...bounds };
     this.hideTimeout = hideTimeout;
     this.name = name;

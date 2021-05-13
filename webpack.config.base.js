@@ -101,6 +101,9 @@ const config = {
     fs: 'require("fs")',
     os: 'require("os")',
     path: 'require("path")',
+    // due to ws loading issue https://github.com/websockets/ws/issues/1126#issuecomment-631605589
+    bufferutil: 'bufferutil',
+    'utf-8-validate': 'utf-8-validate',
   },
 
   optimization: {

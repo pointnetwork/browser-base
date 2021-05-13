@@ -7,7 +7,6 @@ import { TxList, Wrapper } from './style';
 import { ITxData } from '~/main/fork/point/services/wallet/wallet';
 
 export default observer(() => {
-  console.log(toJS(store.txArr));
   return (
     <Wrapper>
       <h2>Transcation list</h2>

@@ -5,6 +5,7 @@ import { getTheme } from '~/utils/themes';
 import { ERROR_PROTOCOL, WEBUI_BASE_URL } from '~/constants/files';
 import { injectChromeWebstoreInstallButton } from './chrome-webstore';
 import { FORK_TYPES } from '~/constants/fork';
+import { PreloadPoint } from '~/preloads/point/point';
 
 // ipcRenderer methods to allow
 contextBridge.exposeInMainWorld('electronApi', {
@@ -18,6 +19,7 @@ contextBridge.exposeInMainWorld('electronApi', {
   receive: (channel, data) => {
     ipcRenderer.on(channel, data);
   },
+  point: new PreloadPoint(),
 });
 const tabId = ipcRenderer.sendSync('get-webcontents-id');
 

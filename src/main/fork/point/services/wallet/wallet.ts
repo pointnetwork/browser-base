@@ -1,7 +1,7 @@
 import { ipcMain, IpcMainInvokeEvent } from 'electron';
 
 import { EventEmitter } from 'events';
-import { IConfirmation } from '~/interfaces/confirmation';
+import { IConfirmation, ITxObj } from '~/interfaces/confirmation';
 import {
   IWalletError,
   IWalletErrorTypes,
@@ -21,14 +21,13 @@ import {
 import { apiRequest } from '~/utils/api';
 import { showSimpleNotification } from '~/utils/notifications';
 import { SocketClient } from '~/main/fork/point/classes/SocketClient';
-
-const testAddress = '0xC01011611e3501C6b3F6dC4B6d3FE644d21aB301';
+import { getWebUIURL } from '~/common/webui';
 
 export class WalletService extends EventEmitter {
   public address = '';
   public hash = '';
   public funds = '0';
-  public requestQueue: number[] = [];
+  public requestQueue: ITxObj[] = [];
   public walletSettings: IWalletSettings;
 
   public walletHistory: WalletHistory;
@@ -151,24 +150,20 @@ export class WalletService extends EventEmitter {
     return this.hash;
   }
 
-  public requestSendFunds(
-    confirmObj: IConfirmation,
-    amount: number,
-  ): IWalletError | boolean {
-    if (gt(amount, this.funds))
+  public requestSendFunds(confirmObj: IConfirmation): IWalletError | boolean {
+    if (gt(confirmObj.txObj.amount, this.funds))
       return createWalletError(
         IWalletErrorTypes.NOT_ENOUGH_FUNDS,
         'Not enough funds',
       );
-    // TODO
-    //  invoke the confirmation window
+
     const confirmationDialog = Application.instance.dialogs.getPersistent(
       'confirmation',
     );
-    console.log('sent confirmation request');
-    confirmationDialog.send('confirmation-request', confirmObj, amount);
+    console.log('sent confirmation request ', confirmObj);
+    confirmationDialog.send('confirmation-request', confirmObj);
 
-    this.requestQueue.push(amount);
+    this.requestQueue.push(confirmObj.txObj);
     return true;
   }
 
@@ -179,13 +174,13 @@ export class WalletService extends EventEmitter {
 
   public async sendFunds() {
     if (this.requestQueue.length === 0) return;
-    const amount = this.requestQueue.shift();
+    const txObj = this.requestQueue.shift() as ITxObj;
 
     const { data } = await apiRequest(WALLET_API, 'REQUEST_TX', {
       headers: this.headers,
       body: {
-        to: testAddress,
-        value: `${amount}`,
+        to: txObj.address,
+        value: `${txObj.amount}`,
       },
     });
     if (data.status === 200) {
@@ -193,7 +188,7 @@ export class WalletService extends EventEmitter {
       // const resData = data.data as Record<string, string>;
       // this.pushTx(resData.transactionHash);
     } else {
-      alert(`tx send fail - ${JSON.stringify(data)}`);
+      showSimpleNotification(`tx send fail`, JSON.stringify(data), null, false);
     }
 
     this.getAccountFunds();
@@ -223,15 +218,15 @@ export class WalletService extends EventEmitter {
   private applyIpcHandlers() {
     ipcMain.handle(
       'wallet-send-funds',
-      async (
-        e: IpcMainInvokeEvent,
-        confirmationObj: IConfirmation,
-        amount: number,
-      ) => {
-        this.requestSendFunds(
-          { ...confirmationObj, windowId: e.frameId },
-          amount,
-        );
+      async (e: IpcMainInvokeEvent, confirmationObj: IConfirmation) => {
+        console.log(confirmationObj);
+        // TODO : check which tab sent the request and confirm authenticity
+        if (getWebUIURL('wallet') === confirmationObj.link) {
+          //  trusted link
+        } else {
+          //   check the source of the link before carrying on.
+        }
+        this.requestSendFunds({ ...confirmationObj, windowId: e.frameId });
       },
     );
 

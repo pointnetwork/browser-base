@@ -72,6 +72,7 @@ export class DialogsService {
 
     this.persistentDialogs.push(new SearchDialog());
     this.persistentDialogs.push(new PreviewDialog());
+    console.log('PUSHING CONFIRMATION DIALOG');
     this.persistentDialogs.push(new ConfirmationDialog());
   }
 

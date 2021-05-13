@@ -59,18 +59,19 @@ export const ProxySettings = observer(() => {
         </div>
       </Row>
       <Row style={{ justifyContent: 'flex-end' }}>
-        <Button
-          type="outlined"
-          foreground={BLUE_500}
-          onClick={() => applyWindowProxy(input)}
-        >
-          Apply Window Proxy
-        </Button>
-      </Row>
-      <Row style={{ justifyContent: 'flex-end' }}>
-        <Button type="outlined" foreground={BLUE_500} onClick={applyDefault}>
-          Apply Default Proxy
-        </Button>
+        <div>
+          <Button
+            style={{ margin: '7px 0' }}
+            type="outlined"
+            foreground={BLUE_500}
+            onClick={() => applyWindowProxy(input)}
+          >
+            Apply Window Proxy
+          </Button>
+          <Button type="outlined" foreground={BLUE_500} onClick={applyDefault}>
+            Apply Default Proxy
+          </Button>
+        </div>
       </Row>
     </>
   );

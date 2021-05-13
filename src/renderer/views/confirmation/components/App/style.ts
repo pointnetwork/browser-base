@@ -73,3 +73,10 @@ export const Title = styled.div`
     font-size: 20px;
   }
 `;
+
+export const TxObjWrapper = styled.div`
+  > p {
+    max-width: 250px;
+    word-break: break-word;
+  }
+`;
