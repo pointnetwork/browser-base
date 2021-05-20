@@ -6,15 +6,11 @@ if (process.env.NODE_ENV === 'development') {
   require('source-map-support').install();
 }
 
-if (!process.env.WALLET_SOCKET_PORT) {
-  process.env.WALLET_SOCKET_PORT = '2468';
+if (!process.env.WALLET_API_PORT) {
+  process.env.WALLET_API_PORT = '2468';
 }
-if (!process.env.CONSOLE_SOCKET_PORT) {
-  process.env.CONSOLE_SOCKET_PORT = '2469';
-}
-
-if (!process.env.EMAIL_SOCKET_PORT) {
-  process.env.EMAIL_SOCKET_PORT = '7545';
+if (!process.env.SOCKET_PORT) {
+  process.env.SOCKET_PORT = '2469';
 }
 
 // check for point

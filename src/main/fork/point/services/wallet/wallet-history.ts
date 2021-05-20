@@ -2,6 +2,7 @@ import { ipcMain } from 'electron';
 import { EventEmitter } from 'events';
 import { ITxReceive, ITxSend } from '~/interfaces/tx';
 import { IWalletTx } from '~/interfaces/wallet';
+import { invokeEvent } from '~/utils/scripts';
 
 // TODO
 //  add logic for pagination when querying for account tx history
@@ -19,9 +20,10 @@ export class WalletHistory extends EventEmitter {
     this.setAddress(address);
     this.getAccountTxHistory();
     this.applyIpcHandlers();
+    this.applySocketHandlers();
   }
 
-  private setAddress(address) {
+  private setAddress(address: string) {
     this.address = address;
     this.getAccountTxHistory();
   }
@@ -29,16 +31,27 @@ export class WalletHistory extends EventEmitter {
   public receiveTx(tx: ITxReceive) {
     this.liveReceiveArray.push(tx);
     this.txHistory.push(tx);
+    this.emit('receive', tx);
   }
 
   public sendTx(tx: ITxSend) {
     this.liveSendArray.push(tx);
     this.txHistory.push(tx);
+    this.emit('send', tx);
   }
 
   private getAccountTxHistory() {
     // TODO
     //  logic that queries account data and keeps in txHistory
+  }
+
+  private applySocketHandlers() {
+    this.on('receive', (tx) => {
+      this.emit('external', tx);
+    });
+    this.on('send', (tx) => {
+      this.emit('external', tx);
+    });
   }
 
   private applyIpcHandlers() {
@@ -47,6 +60,9 @@ export class WalletHistory extends EventEmitter {
     });
     ipcMain.handle(`wallet-get-receives`, async () => {
       return this.txHistory;
+    });
+    this.on('external', (msg) => {
+      invokeEvent('external-wallet-message', msg);
     });
   }
 }

@@ -6,21 +6,20 @@ import { apiRequest } from '~/utils/api';
 import { WALLET_API } from '~/main/fork/point/constants/api';
 import { timeout } from '~/utils/utils';
 import { showSimpleNotification } from '~/utils/notifications';
-import { PointEmailClient } from '~/main/fork/point/services/email/email';
 import { WindowsService } from '~/main/windows-service';
 import { runPointMessagingService } from '~/main/fork/point/services/messaging';
 import { AppWindow } from '~/main/windows';
+import { NodeSocketService } from '~/main/fork/point/services/node/nodeSocket';
 
 export class PointClient extends ForkClient {
   static instance = new PointClient();
 
-  public wallet: WalletService;
-  // public emailClient: PointEmailClient;
+  public socket = NodeSocketService.instance;
   public settings = PointSettings.instance; //  instance created so that settings are loaded before the settings are actually required
 
   public constructor() {
     super();
-    this.wallet = new WalletService();
+
     ipcMain.on('apply-proxy', () => {
       this.setProxies();
     });
@@ -32,7 +31,7 @@ export class PointClient extends ForkClient {
 
   public async onReady() {
     await app.whenReady();
-    this.wallet.loadSettings();
+    this.socket.wallet.loadSettings();
     this.settings.getSettings().then(() => {
       console.log('got settings>>>>');
       this.setProxies();
@@ -76,36 +75,10 @@ export class PointClient extends ForkClient {
     WindowsService.instance.list.forEach((window) =>
       this.applyWindowProxy(proxyRules, window),
     );
-
-    // session
-    //   .fromPartition('view')
-    //   .setProxy({ proxyRules, proxyBypassRules })
-    //   .then(() => {
-    //     console.log('proxy applied - webviewsession', {
-    //       proxyRules,
-    //       proxyBypassRules,
-    //     });
-    //   });
-    // session
-    //   .fromPartition('view_incognito')
-    //   .setProxy({ proxyRules, proxyBypassRules })
-    //   .then(() => {
-    //     console.log('proxy applied - incognito', {
-    //       proxyRules,
-    //       proxyBypassRules,
-    //     });
-    //   });
-    //
-    // session
-    //   .fromPartition('view')
-    //   .resolveProxy('http://mail.z')
-    //   .then((res) => console.log('fromPartition resolve', res));
   }
 
   //  quits app if point node is not connected
-  // TODO : quit after showing notification
   private async heartbeatMonitor() {
-    // console.log('heartbeat check >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
     const requests = [];
     requests.push(
       new Promise(async (resolve) => {

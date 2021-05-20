@@ -2,8 +2,8 @@ import { IApiObject } from '~/utils/api';
 
 const port =
   typeof process === 'undefined'
-    ? window.electronApi.processEnv('WALLET_SOCKET_PORT')
-    : process.env.WALLET_SOCKET_PORT;
+    ? window.electronApi.processEnv('WALLET_API_PORT')
+    : process.env.WALLET_API_PORT;
 export const WALLET_API: IApiObject = {
   BASE: `http://localhost:${port}`,
   ROUTES: {
@@ -32,18 +32,6 @@ export const WALLET_API: IApiObject = {
       route: '/api/ping',
     },
   },
-};
-
-export const WALLET_WS = {
-  BASE: `ws://localhost:${port}/ws/wallet/connect`,
-};
-
-const emailPort =
-  typeof process === 'undefined'
-    ? window.electronApi.processEnv('EMAIL_SOCKET_PORT')
-    : process.env.EMAIL_SOCKET_PORT;
-export const EMAIL_WS = {
-  BASE: `ws://localhost:${emailPort}/ws/wallet/connect`,
 };
 
 export const SOCKET_DEFAULT_OPTIONS = Object.freeze({

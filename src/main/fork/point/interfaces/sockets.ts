@@ -4,9 +4,8 @@ export interface ISocketObj {
   data?: unknown[];
 }
 
-export interface ISocketSub {
-  evName: string;
-  callback: (...args: unknown[]) => void;
-}
-
-export type ISocketCallback = (...args: unknown[]) => void;
+export const CONSOLE_CLIENT_MESSAGES = {
+  STATUS: 'status',
+  DEPLOYMENT_PROGRESS: 'api_deploy',
+  MESSAGE: 'message',
+};

@@ -5,7 +5,8 @@ import { getTheme } from '~/utils/themes';
 import { ERROR_PROTOCOL, WEBUI_BASE_URL } from '~/constants/files';
 import { injectChromeWebstoreInstallButton } from './chrome-webstore';
 import { FORK_TYPES } from '~/constants/fork';
-import { PreloadPoint } from '~/preloads/point/point';
+import { preloadPointWallet } from '~/preloads/point/wallet';
+import { preloadPointConsole } from '~/preloads/point/console';
 
 // ipcRenderer methods to allow
 contextBridge.exposeInMainWorld('electronApi', {
@@ -13,14 +14,23 @@ contextBridge.exposeInMainWorld('electronApi', {
   processEnv: (key: string) => {
     return process.env[key];
   },
-  send: (channel, data) => {
-    ipcRenderer.send(channel, data);
-  },
-  receive: (channel, data) => {
-    ipcRenderer.on(channel, data);
-  },
-  point: new PreloadPoint(),
+  // send: (channel: string, data: unknown) => {
+  //   ipcRenderer.send(channel, data);
+  // },
+  // receive: (channel: string, cb: (...cbArgs: unknown[]) => void) => {
+  //   ipcRenderer.on(channel, (event, ...args) => {
+  //     cb(...args);
+  //   });
+  // },
 });
+contextBridge.exposeInMainWorld('point', {
+  wallet: preloadPointWallet,
+  console: preloadPointConsole,
+});
+
+// contextBridge.exposeInMainWorld('point', {
+//   new PreloadPoint()
+// });
 const tabId = ipcRenderer.sendSync('get-webcontents-id');
 
 export const windowId: number = ipcRenderer.sendSync('get-window-id');

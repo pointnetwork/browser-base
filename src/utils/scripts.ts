@@ -5,6 +5,7 @@ export interface IInvokeException {
   dialog?: string[];
   view?: string[];
 }
+
 export function invokeEvent(
   channelName: string,
   data: unknown,
@@ -13,7 +14,7 @@ export function invokeEvent(
   const windows = WindowsService.instance.list;
   //  send to all windows
   windows.forEach((window) => {
-    console.log('invokeEvent to window', window.id);
+    // console.log('invokeEvent to window', window.id);
     window.win.webContents.send(channelName, data);
 
     //  send to all views

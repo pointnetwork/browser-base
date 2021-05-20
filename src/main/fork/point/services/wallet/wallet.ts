@@ -12,7 +12,7 @@ import { add, fixed, gt, minus } from '~/utils/Big';
 import { WalletHistory } from '~/main/fork/point/services/wallet/wallet-history';
 import { Application } from '~/main/application';
 import { invokeEvent } from '~/utils/scripts';
-import { WALLET_API, WALLET_WS } from '~/main/fork/point/constants/api';
+import { WALLET_API } from '~/main/fork/point/constants/api';
 import { Settings } from '~/main/models/settings';
 import {
   IPointSettings,
@@ -22,6 +22,7 @@ import { apiRequest } from '~/utils/api';
 import { showSimpleNotification } from '~/utils/notifications';
 import { SocketClient } from '~/main/fork/point/classes/SocketClient';
 import { getWebUIURL } from '~/common/webui';
+import { NodeSocketService } from '~/main/fork/point/services/node/nodeSocket';
 
 export class WalletService extends EventEmitter {
   public address = '';
@@ -37,7 +38,6 @@ export class WalletService extends EventEmitter {
 
   public constructor() {
     super();
-
     this.on(IWalletEvents.RECEIVED_FUNDS, (_, obj: ITxReceive) => {
       // TODO
       //  invoke notification that funds were received
@@ -195,18 +195,32 @@ export class WalletService extends EventEmitter {
   }
 
   private initWalletSocketClient() {
-    this._walletSocket = new SocketClient(WALLET_WS.BASE);
-    this._walletSocket.addSocketCb((data: ISocketData) => {
-      // console.log('socket callback', data);
-      if (data?.data) {
-        if (typeof data?.data?.status === 'object') {
-          console.log('socket status >>>', data.data.status);
-          return;
+    // this._walletSocket = new SocketClient(WALLET_WS.BASE);
+    NodeSocketService.instance.on(
+      'socket-wallet-message',
+      (msg: MessageEvent) => {
+        const data = msg as ISocketData;
+        if (data?.data) {
+          if (typeof data?.data?.status === 'object') {
+            console.log('socket status >>>', data.data.status);
+            return;
+          }
+          this._txArr.push(data?.data);
+          invokeEvent('wallet-update-txArr', data?.data);
         }
-        this._txArr.push(data?.data);
-        invokeEvent('wallet-update-txArr', data?.data);
-      }
-    });
+      },
+    );
+    // this._walletSocket.addSocketCb((data: ISocketData) => {
+    //   // console.log('socket callback', data);
+    //   if (data?.data) {
+    //     if (typeof data?.data?.status === 'object') {
+    //       console.log('socket status >>>', data.data.status);
+    //       return;
+    //     }
+    //     this._txArr.push(data?.data);
+    //     invokeEvent('wallet-update-txArr', data?.data);
+    //   }
+    // });
   }
 
   private applyEventHandlers() {
@@ -299,6 +313,7 @@ export interface ITxData {
   from: string;
   to: string;
   value: string;
+  status?: Record<string, string>;
 }
 
 export const createWalletError = (

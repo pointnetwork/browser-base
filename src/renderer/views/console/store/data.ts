@@ -2,7 +2,6 @@ import { observable, computed, makeObservable } from 'mobx';
 import { ipcRenderer } from 'electron';
 import {
   CLIENT_MESSAGES,
-  SOCKET_MESSAGES,
   ConsoleSocketClient,
 } from '~/renderer/classes/ConsoleSocketClient';
 
@@ -37,11 +36,7 @@ export class DataStore {
       this.push(content);
     });
     this.push('Logs Hooked');
-    const client = new ConsoleSocketClient(
-      `ws://localhost:${window.electronApi.processEnv(
-        'CONSOLE_SOCKET_PORT',
-      )}/ws/deploy/progress`,
-    );
+    const client = new ConsoleSocketClient();
     client.on(CLIENT_MESSAGES.DEPLOYMENT_PROGRESS, (data: IProgressObject) => {
       console.log('progress - ', data);
       this.groupPush(data.data);
@@ -88,31 +83,5 @@ export class DataStore {
     if (this.logQueue.length > MAX_LOG_ITEMS) {
       this.logQueue.shift();
     }
-  }
-
-  public test() {
-    this.push(
-      'This is a long log. This is a long log. This is a long log. This is a long log. This is a long log. This is a long log. This is a long log. This is a long log. This is a long log. This is a long log. This is a long log. This is a long log. This is a long log. This is a long log. This is a long log. This is a long log. This is a long log. This is a long log. ',
-    );
-    this.push('This is a single line log');
-    this.groupPush([
-      'This is a multi-line log',
-      'This is a multi-line log',
-      'This is a multi-line log',
-    ]);
-    const client = new ConsoleSocketClient('');
-    client.on(CLIENT_MESSAGES.DEPLOYMENT_PROGRESS, (data) => {
-      console.log('progress?', data);
-      this.push(data.data);
-    });
-    let percent = 0;
-    const interval = setInterval(() => {
-      client.socket.emit('message', {
-        type: SOCKET_MESSAGES.DEPLOYMENT_PROGRESS,
-        data: `progress - ${percent}%`,
-      });
-      percent = percent + 10;
-      if (percent > 100) clearInterval(interval);
-    }, 1000);
   }
 }
