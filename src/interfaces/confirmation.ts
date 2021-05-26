@@ -7,7 +7,7 @@ export interface IConfirmation {
   txObj: ITxObj;
 }
 
-interface ITxSend {
+export interface ITxSend {
   amount: number;
   address: string;
 }

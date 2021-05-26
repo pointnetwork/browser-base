@@ -4,6 +4,22 @@ const port =
   typeof process === 'undefined'
     ? window.electronApi.processEnv('WALLET_API_PORT')
     : process.env.WALLET_API_PORT;
+
+export const STORAGE_API: IApiObject = {
+  BASE: `http://localhost:${port}`,
+  ROUTES: {
+    GET_FILE_BY_ID: {
+      type: 'get',
+      route: (id) => `/api/storage/files/${id}`,
+    },
+    // TODO : add put & getByIK when available
+    // GET_FILES: {
+    //   type: 'get',
+    //   route: '/api/storage/files',
+    // },
+  },
+};
+
 export const WALLET_API: IApiObject = {
   BASE: `http://localhost:${port}`,
   ROUTES: {

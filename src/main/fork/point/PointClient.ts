@@ -10,10 +10,12 @@ import { WindowsService } from '~/main/windows-service';
 import { runPointMessagingService } from '~/main/fork/point/services/messaging';
 import { AppWindow } from '~/main/windows';
 import { NodeSocketService } from '~/main/fork/point/services/node/nodeSocket';
+import { StorageService } from '~/main/fork/point/services/storage/storage';
 
 export class PointClient extends ForkClient {
   static instance = new PointClient();
 
+  public storage = StorageService.instance;
   public socket = NodeSocketService.instance;
   public settings = PointSettings.instance; //  instance created so that settings are loaded before the settings are actually required
 

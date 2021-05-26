@@ -1,6 +1,10 @@
 import { ipcRenderer } from 'electron';
-import { IConfirmation } from '~/interfaces/confirmation';
-import { IApiError, IBalanceRequestResult } from '~/interfaces/pointApi';
+import { IConfirmation, ITxSend } from '~/interfaces/confirmation';
+import {
+  IAddressRequestResult,
+  IApiError,
+  IBalanceRequestResult,
+} from '~/interfaces/pointApi';
 import { IWalletTx } from '~/interfaces/wallet';
 
 /**
@@ -8,7 +12,17 @@ import { IWalletTx } from '~/interfaces/wallet';
  * @TODO Currently only supports sending tokens, needs to expand
  */
 export const preloadPointWallet = {
-  requestSendTransaction(requestObj: Partial<IConfirmation>) {
+  sendTransaction(sendObj: ITxSend) {
+    ipcRenderer.invoke('wallet-send-funds', {
+      link: '',
+      confirmationRequest: 'No Message',
+      requestTarget: 'No Target',
+      logo: 'No Logo',
+      txObj: sendObj,
+      windowId: ipcRenderer.sendSync('get-window-id'),
+    });
+  },
+  sendTransactionVerbose(requestObj: Partial<IConfirmation>) {
     // TODO : data sanitization
 
     ipcRenderer.invoke('wallet-send-funds', {
@@ -29,19 +43,32 @@ export const preloadPointWallet = {
   },
 
   /** @desc returns the wallet's current balance */
-  async requestBalance(): Promise<IBalanceRequestResult> {
+  async getBalance(): Promise<IBalanceRequestResult> {
     try {
-      return await ipcRenderer.invoke('wallet-get-funds');
+      const res = await ipcRenderer.invoke('wallet-get-funds');
+      return { token: res };
     } catch (e: unknown) {
       return {
-        error: new Error('failed to retrieve funds'),
+        error: new Error('NotAuthorizedError'),
+        errObj: e,
+      } as IApiError;
+    }
+  },
+
+  async getAddress(): Promise<IAddressRequestResult> {
+    try {
+      const res = await ipcRenderer.invoke('wallet-get-address');
+      return res;
+    } catch (e: unknown) {
+      return {
+        error: new Error('NotAuthorizedError'),
         errObj: e,
       } as IApiError;
     }
   },
 
   /** @desc returns the wallet's current tx history */
-  async requestWalletHistory(): Promise<unknown> {
+  async getWalletHistory(): Promise<unknown> {
     try {
       const res = await ipcRenderer.invoke('wallet-get-history');
       return res as IWalletTx[];

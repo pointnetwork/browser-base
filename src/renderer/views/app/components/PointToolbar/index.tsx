@@ -14,7 +14,7 @@ import store from '~/renderer/views/app/store';
 import { ToolbarButton } from '~/renderer/views/app/components/ToolbarButton';
 import { ipcRenderer } from 'electron';
 import { getWebUIURL } from '~/common/webui';
-import { fixed } from '~/utils/Big';
+import { fixed, divide } from '~/utils/Big';
 import { formatNumber } from '~/utils/format';
 import { WalletStore } from '~/renderer/views/app/store/wallet';
 
@@ -48,8 +48,10 @@ export const PointToolbar = observer(() => {
             <p>-</p>
           ) : (
             <>
-              <h2>{formatNumber(fixed(wallet.funds, 0))}</h2>
-              <p>POINT</p>
+              <h2>
+                {formatNumber(fixed(divide(wallet.funds, Math.pow(10, 12)), 0))}
+              </h2>
+              <p>microPOINT</p>
             </>
           )}
         </PointAmount>

@@ -9,7 +9,7 @@ import { ITxData } from '~/main/fork/point/services/wallet/wallet';
 export default observer(() => {
   return (
     <Wrapper>
-      <h2>Transcation list</h2>
+      <h2>Transaction list</h2>
       <TxList>
         {toJS(store.txArr).map((v: ITxData) => (
           <li style={{ marginBottom: '5px' }} key={v.transactionHash}>
@@ -25,7 +25,7 @@ export default observer(() => {
                 {v.from}
               </p>
             )}
-            <p>amount: {v.value} POINT</p>
+            <p>amount: {v.value} wei</p>
           </li>
         ))}
       </TxList>

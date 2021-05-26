@@ -6,7 +6,7 @@ import { ThemeProvider } from 'styled-components';
 import { Wrapper } from './style';
 import { WebUIStyle } from '~/renderer/mixins/default-styles';
 import { ipcRenderer } from 'electron';
-import { fixed } from '~/utils/Big';
+import { fixed, divide } from '~/utils/Big';
 import Txs from '../Txs';
 import { formatNumber } from '~/utils/format';
 import { IConfirmation, ITxObj } from '~/interfaces/confirmation';
@@ -52,9 +52,9 @@ export default observer(() => {
         <Wrapper fullSize={true}>
           <h1>Point Wallet</h1>
           <div>
-            <p>Funds: {formatNumber(fixed(store.funds, 0))}</p>
+            <p>Funds: {formatNumber(fixed(store.funds, 0))} wei</p>
             <p>address: {store.address}</p>
-            <button onClick={testClickHandler}>Test send 10 POINT</button>
+            <button onClick={testClickHandler}>Test send 10 wei</button>
           </div>
           <div className="inputs-wrapper">
             <h6>Send Funds</h6>

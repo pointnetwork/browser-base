@@ -206,6 +206,7 @@ export class WalletService extends EventEmitter {
             return;
           }
           this._txArr.push(data?.data);
+          console.log('new socket tx', data);
           invokeEvent('wallet-update-txArr', data?.data);
         }
       },

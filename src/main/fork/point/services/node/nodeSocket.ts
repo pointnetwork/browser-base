@@ -20,6 +20,7 @@ export class NodeSocketService extends EventEmitter {
   }
 
   public processMsg(msg: MessageEvent) {
+    console.log('processMsg', msg);
     if (
       msg.type === CONSOLE_CLIENT_MESSAGES.DEPLOYMENT_PROGRESS ||
       msg.type === CONSOLE_CLIENT_MESSAGES.MESSAGE ||

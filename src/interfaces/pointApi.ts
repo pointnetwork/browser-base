@@ -3,4 +3,6 @@ export interface IApiError {
   errObj: unknown; //  TODO : specify?...
 }
 
-export type IBalanceRequestResult = string | IApiError;
+export type IBalanceRequestResult = { token: number } | IApiError;
+
+export type IAddressRequestResult = string | IApiError;

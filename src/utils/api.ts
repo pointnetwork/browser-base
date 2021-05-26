@@ -8,6 +8,10 @@ export const apiRequest = async (
   const targetRoute = apiObj.ROUTES[route] as IRouteObject;
   if (targetRoute.type === 'get') {
     try {
+      if (settings?.params) {
+        const route = targetRoute.route as (...args: unknown[]) => string;
+        return await axios.get(`${apiObj.BASE}${route(...settings.params)}`);
+      }
       return await axios.get(`${apiObj.BASE}${targetRoute.route}`, {
         headers: settings?.headers,
       });
@@ -35,6 +39,7 @@ export interface IResponseData {
 export interface IApiSettings {
   readonly headers?: Record<string, unknown>;
   readonly body?: Record<string, unknown>;
+  readonly params?: unknown[];
 }
 
 export interface IApiObject {
@@ -44,5 +49,5 @@ export interface IApiObject {
 
 interface IRouteObject {
   type: 'get' | 'post';
-  route: string;
+  route: string | ((...args: unknown[]) => string);
 }
