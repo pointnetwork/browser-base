@@ -54,9 +54,9 @@ export class ViewManager extends EventEmitter {
     ipcMain.on(`set-tab-${id}`, (e, details) => {
       const view = this.views.get(this.selectedId);
 
-      if (details.url.includes('wallet')) {
-        view.webContents.openDevTools({ mode: 'detach' });
-      }
+      // if (details.url.includes('wallet')) {
+      //   view.webContents.openDevTools({ mode: 'detach' });
+      // }
 
       // email exception
       if (details.url === getWebUIURL('email')) {
