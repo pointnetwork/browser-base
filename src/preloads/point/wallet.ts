@@ -12,13 +12,13 @@ import { IWalletTx } from '~/interfaces/wallet';
  * @TODO Currently only supports sending tokens, needs to expand
  */
 export const preloadPointWallet = {
-  sendTransaction(sendObj: ITxSend) {
+  sendTransaction(address: string, amount: number) {
     ipcRenderer.invoke('wallet-send-funds', {
       link: '',
       confirmationRequest: 'No Message',
       requestTarget: 'No Target',
       logo: 'No Logo',
-      txObj: sendObj,
+      txObj: { address, amount },
       windowId: ipcRenderer.sendSync('get-window-id'),
     });
   },

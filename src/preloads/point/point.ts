@@ -1,7 +1,9 @@
-import { PreloadPointWallet } from '~/preloads/point/wallet';
-import { PreloadPointConsole } from '~/preloads/point/console';
+import { preloadPointWallet } from '~/preloads/point/wallet';
+import { preloadPointConsole } from '~/preloads/point/console';
+import { preloadPointStorage } from '~/preloads/point/storage';
 
 export const PreloadPoint = {
-  wallet: new PreloadPointWallet(),
-  console: new PreloadPointConsole(),
+  wallet: preloadPointWallet,
+  console: preloadPointConsole,
+  storage: preloadPointStorage,
 };
