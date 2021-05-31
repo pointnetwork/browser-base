@@ -48,7 +48,7 @@ const DisplayTxObj: React.FunctionComponent<Record<'txObj', ITxObj>> = ({
       {/* eslint-disable-next-line react/prop-types */}
       <p>Address: {txObj.address}</p>
       {/* eslint-disable-next-line react/prop-types */}
-      <p>Amount: {txObj.amount} POINT</p>
+      <p>Amount: {txObj.amount} wei</p>
     </TxObjWrapper>
   );
 };

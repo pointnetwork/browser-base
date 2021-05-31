@@ -76,13 +76,13 @@ export class WalletService extends EventEmitter {
   public async loadPublicAddress(): Promise<void> {
     if (!this.loaded) return;
     console.log('request public address');
-    const { data } = await apiRequest(WALLET_API, 'PUBLIC_KEY', {
+    const { data } = await apiRequest(WALLET_API, 'ADDRESS', {
       headers: this.headers,
     });
     console.log('public address res >>', data);
     if (data?.status === 200) {
       const resData = data.data as Record<string, string>;
-      this.address = resData?.publicKey;
+      this.address = resData?.address;
       this.initWalletSocketClient();
       this.getAccountFunds();
       this.emit('load');

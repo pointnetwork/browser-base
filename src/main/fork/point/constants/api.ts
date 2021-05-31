@@ -27,6 +27,10 @@ export const WALLET_API: IApiObject = {
       type: 'get',
       route: '/api/wallet/generate', //  generate a new wallet
     },
+    ADDRESS: {
+      type: 'get',
+      route: '/api/wallet/address',
+    },
     PUBLIC_KEY: {
       type: 'get',
       route: '/api/wallet/publicKey',
