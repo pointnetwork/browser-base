@@ -45,6 +45,8 @@ export class PointSettings extends EventEmitter {
       let json;
       try {
         json = JSON.parse(file);
+        // uncomment the line below if you want settings from the code to persist
+        // json = POINT_SETTINGS
       } catch (ex) {
         json = POINT_SETTINGS;
         console.log('Point Settings load fail');

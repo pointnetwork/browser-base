@@ -7,6 +7,7 @@ import { injectChromeWebstoreInstallButton } from './chrome-webstore';
 import { FORK_TYPES } from '~/constants/fork';
 import { preloadPointWallet } from '~/preloads/point/wallet';
 import { preloadPointConsole } from '~/preloads/point/console';
+import { preloadPointContract } from '~/preloads/point/contract';
 
 // ipcRenderer methods to allow
 contextBridge.exposeInMainWorld('electronApi', {
@@ -26,6 +27,7 @@ contextBridge.exposeInMainWorld('electronApi', {
 contextBridge.exposeInMainWorld('point', {
   wallet: preloadPointWallet,
   console: preloadPointConsole,
+  contract: preloadPointContract
 });
 
 // contextBridge.exposeInMainWorld('point', {

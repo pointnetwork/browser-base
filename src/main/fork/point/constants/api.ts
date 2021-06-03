@@ -20,6 +20,16 @@ export const STORAGE_API: IApiObject = {
   },
 };
 
+export const CONTRACT_API: IApiObject = {
+  BASE: `http://localhost:${port}`,
+  ROUTES: {
+    CALL: {
+      type: 'get',
+      route: (host, contractName, method, params) => `/api/contract/call?host=${host}&contractName=${contractName}&method=${method}&params=${params}`,
+    }
+  },
+};
+
 export const WALLET_API: IApiObject = {
   BASE: `http://localhost:${port}`,
   ROUTES: {
