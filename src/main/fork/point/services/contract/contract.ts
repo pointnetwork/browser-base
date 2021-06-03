@@ -10,8 +10,10 @@ export class ContractService extends EventEmitter {
     this.applyIpcRenderers();
   }
 
-  public async call(): Promise<unknown> {
-    const { data } = await apiRequest(CONTRACT_API, 'CALL');
+  public async call(host: string, contractName: string, method: string, params: string): Promise<unknown> {
+    const { data } = await apiRequest(CONTRACT_API, 'CALL', {
+      params: [host, contractName, method, params],
+    });
     if (data?.status === 200) {
       return data.data;
     } else {
@@ -20,8 +22,8 @@ export class ContractService extends EventEmitter {
   }
 
   private applyIpcRenderers() {
-    ipcMain.handle(`external-contract-call`, async (e) => {
-      return await this.call();
+    ipcMain.handle(`external-contract-call`, async (e, host: string, contractName: string, method: string, params: string) => {
+      return await this.call(host, contractName, method, params);
     });
   }
 }

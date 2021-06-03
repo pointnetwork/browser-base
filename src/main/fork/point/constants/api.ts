@@ -25,7 +25,7 @@ export const CONTRACT_API: IApiObject = {
   ROUTES: {
     CALL: {
       type: 'get',
-      route: '/api/contract/call',
+      route: (host, contractName, method, params) => `/api/contract/call?host=${host}&contractName=${contractName}&method=${method}&params=${params}`,
     }
   },
 };
