@@ -10,7 +10,7 @@ export const STORAGE_API: IApiObject = {
   ROUTES: {
     GET_FILE_BY_ID: {
       type: 'get',
-      route: (id) => `/api/storage/files/${id}`,
+      route: (id) => `/api/storage/get/${id}`,
     },
     // TODO : add put & getByIK when available
     // GET_FILES: {
@@ -26,6 +26,10 @@ export const CONTRACT_API: IApiObject = {
     CALL: {
       type: 'get',
       route: (host, contractName, method, params) => `/api/contract/call?host=${host}&contractName=${contractName}&method=${method}&params=${params}`,
+    },
+    SEND: {
+      type: 'post',
+      route: '/api/contract/send',
     }
   },
 };

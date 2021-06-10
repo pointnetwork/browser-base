@@ -8,6 +8,7 @@ import { FORK_TYPES } from '~/constants/fork';
 import { preloadPointWallet } from '~/preloads/point/wallet';
 import { preloadPointConsole } from '~/preloads/point/console';
 import { preloadPointContract } from '~/preloads/point/contract';
+import { preloadPointStorage } from '~/preloads/point/storage';
 
 // ipcRenderer methods to allow
 contextBridge.exposeInMainWorld('electronApi', {
@@ -27,7 +28,8 @@ contextBridge.exposeInMainWorld('electronApi', {
 contextBridge.exposeInMainWorld('point', {
   wallet: preloadPointWallet,
   console: preloadPointConsole,
-  contract: preloadPointContract
+  contract: preloadPointContract,
+  storage: preloadPointStorage,
 });
 
 // contextBridge.exposeInMainWorld('point', {
